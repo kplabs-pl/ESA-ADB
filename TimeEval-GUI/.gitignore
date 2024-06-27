@@ -1,0 +1,12 @@
+timeeval-files
+
+__pycache__
+.idea
+*.egg-info
+dist
+build
+.mypy_cache
+.pytest_cache
+venv
+.coverage
+coverage.xml

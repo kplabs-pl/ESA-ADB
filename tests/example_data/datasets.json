@@ -1,0 +1,20 @@
+{
+  "dataset.1": {
+    "test_path": "./dataset.test.csv",
+    "type": "synthetic test",
+    "period": 10
+  },
+  "dataset.1.train": {
+    "test_path": "./dataset.test.csv",
+    "train_path": "./dataset.train.csv",
+    "type": "synthetic test"
+  },
+  "dataset.3": {
+    "test_path": "./dataset.test.csv",
+    "type": "synthetic test"
+  },
+  "dataset.4": {
+    "test_path": "./dataset.multi.csv",
+    "type": "synthetic test"
+  }
+}

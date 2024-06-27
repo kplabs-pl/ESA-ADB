@@ -1,0 +1,42 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: Kotowski
+    given-names: Krzysztof
+    orcid: https://orcid.org/0000-0003-2596-6517
+  - family-names: Haskamp
+    given-names: Christoph
+  - family-names: Andrzejewski
+    given-names: Jacek
+title: "European Space Agency Benchmark for Anomaly Detection in Satellite Telemetry"
+date-released: 2024
+preferred-citation:
+  type: article
+  authors:
+    - family-names: Kotowski
+      given-names: Krzysztof
+      orcid: https://orcid.org/0000-0003-2596-6517
+    - family-names: Haskamp
+      given-names: Christoph
+    - family-names: Andrzejewski
+      given-names: Jacek
+    - family-names: Ruszczak
+      given-names: Bogdan
+    - family-names: Nalepa
+      given-names: Jakub
+    - family-names: Lakey
+      given-names: Daniel
+    - family-names: Collins
+      given-names: Peter
+    - family-names: Kolmas
+      given-names: Aybike
+    - family-names: Bartesaghi
+      given-names: Mauro
+    - family-names: Martinez
+      given-names: José
+    - family-names: De Canio
+      given-names: Gabriele
+  journal: "arXiv"
+  title: "European Space Agency Benchmark for Anomaly Detection in Satellite Telemetry"
+  year: 2024
+  doi: 10.48550/arXiv.2406.17826
