@@ -1,15 +1,17 @@
-<h1 align="center">ESA Anomaly Detection Benchmark</h1>
+<h1>ESA Anomaly Detection Benchmark</h1>
 
-The European Space Agency Anomaly Detection Benchmark (ESA-ADB) consists of three main components (visualised in figure below for easier comprehension):
+The European Space Agency Anomaly Detection Benchmark (ESA-ADB) consists of three main components (visualised in the figure below for easier comprehension):
 1.	Large-scale, curated, structured, ML-ready ESA Anomalies Dataset (ESA-AD, in short) of real-life satellite telemetry collected from three ESA missions (out of which two are selected for benchmarking in ESA-ADB), manually annotated by spacecraft operations engineers (SOEs) and ML experts, and cross-verified using state-of-the-art algorithms. It can be downloaded from here: https://doi.org/10.5281/zenodo.12528696
 2.	Evaluation pipeline designed by ML experts for the practical needs of SOEs from the ESA’s European Space Operations Centre (ESOC). It introduces new metrics designed for satellite telemetry according to the latest advancements in time series anomaly detection (TSAD) and simulates real operational scenarios, e.g. different mission phases and real-time monitoring. 
 3.	Benchmarking results of TSAD algorithms selected and improved to comply with the space operations requirements.
 
-<img src="./ESA-ADB.svg">
+<p align="center">
+<img src="./ESA-ADB.svg"/>
+</p>
 
 We hope that this unique benchmark will allow researchers and scientists from academia, research institutes, national and international space agencies, and industry to validate models and approaches on a common baseline as well as research and develop novel, computational-efficient approaches for anomaly detection in satellite telemetry data.
 
-The dataset results from the work of an 18-month project carried by an industry Consortium composed of Airbus Defence and Space, KP Labs, and the European Space Agency’s European Space Operations Centre. The project, funded by the European Space Agency (ESA) under the contract number 4000137682/22/D/SR, is part of The Artificial Intelligence for Automation (A²I) Roadmap (De Canio et al., Development of an actionable AI roadmap for automating mission operations, 2023 SpaceOps Conference), a large endeavour started in 2021 to automate space operations by leveraging artificial intelligence.
+The dataset results from the work of an 18-month project carried by an industry Consortium composed of Airbus Defence and Space, KP Labs, and the European Space Agency’s European Space Operations Centre. The project, funded by the European Space Agency (ESA) under the contract number 4000137682/22/D/SR, is a part of The Artificial Intelligence for Automation (A²I) Roadmap (De Canio et al., Development of an actionable AI roadmap for automating mission operations, 2023 SpaceOps Conference), a large endeavour started in 2021 to automate space operations by leveraging artificial intelligence.
 
 The introduction below describes how to reproduce results presented in the ESA-ADB paper using the provided modified fork of the TimeEval framework.
 
