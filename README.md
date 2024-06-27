@@ -34,7 +34,7 @@ There are separate script to generate preprocessed data for TimeEval framework f
 - Mission1: Mission1_semisupervised_prep_from_raw.py
 - Mission2: Mission2_semisupervised_prep_from_raw.py
 
-The scripts generate all necessary files in data/preprocessed/multivariate folders and add records to data/preprocessed/datasets.csv if necessary (records for ESA-ADB are already added as a part of this repository)
+The scripts generate all necessary files to data/preprocessed/multivariate folders and add records to data/preprocessed/datasets.csv if necessary (records for ESA-ADB are already added as a part of this repository). Note that the preprocessing may take a few hours on a standard PC.
 
 ## Environment setup
 
@@ -51,12 +51,12 @@ The scripts generate all necessary files in data/preprocessed/multivariate folde
    For our Telemanom-ESA, it is enough to run `sudo docker build -t registry.gitlab.hpi.de/akita/i/telemanom_esa ./telemanom_esa`.
    For our DC-VAE-ESA, it is enough to run `sudo docker build -t registry.gitlab.hpi.de/akita/i/dc_vae ./dc_vae`.
 
-## Running benchmark
+## Running experiments
 There is a separate script in the main folder of the repo to run a full grid of experiments for each mission:
 - Mission1: mission1_experiments.py
 - Mission2: mission2_experiments.py
 
-The scripts configure and run all algorithms in Docker containers. Results are generated to 'results' folder
+The scripts configure and run all algorithms in Docker containers. Results are generated to 'results' folder. On a standard PC, it may be necessary to run algorithms separately, one by one.
 
 ### Notes
 - evaluation pipeline with novel time-aware metrics can only be run for datasets following the same structure as ESA Anomalies Dataset (with labels.csv and anomaly_types.csv)
