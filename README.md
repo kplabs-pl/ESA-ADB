@@ -63,24 +63,6 @@ The scripts configure and run all algorithms in Docker containers. Results are g
 - when analyzing results for different anomaly types for the lightweight subsets of channels, it is necessary to regenerate anomaly types using anomaly_types.csv using scripts/infer_anomaly_types.py. It is because anomaly types may depend on the analyzed subset of channels.
 - for now, all algorithms treat rare nominal events as anomalies. To change that behaviour, it would be necessary to modify the code of the framework and some algorithms
 
-## ESA-ADB Citation
-
-If you refer to ESA-ADB in your work, please cite our paper:
-
-> Krzysztof Kotowski, Christoph Haskamp, Jacek Andrzejewski, Bogdan Ruszczak, Jakub Nalepa, Daniel Lakey, Peter Collins, Aybike Kolmas, Mauro Bartesaghi, Jose Martínez-Heras, and Gabriele De Canio.
-> European Space Agency Benchmark for Anomaly Detection in Satellite Telemetry. arXiv, 2024.
-> doi:[10.48550/arXiv.2406.17826](https://doi.org/10.48550/arXiv.2406.17826)
-
-```bibtex
-@article{kotowski_european_2024,
-  title = {European {Space} {Agency} {Benchmark} for {Anomaly} {Detection} in {Satellite} {Telemetry}},
-  author = {Kotowski, Krzysztof and Haskamp, Christoph and Andrzejewski, Jacek and Ruszczak, Bogdan and Nalepa, Jakub and Lakey, Daniel and Collins, Peter and Kolmas, Aybike and Bartesaghi, Mauro and Martinez-Heras, Jose and De Canio, Gabriele},
-  date = {2024},
-  publisher = {arXiv},
-  doi = {10.48550/arXiv.2406.17826}
-}
-```
-
 
 ## TimeEval
 The code of the benchmark is based on the [TimeEval framework](https://github.com/TimeEval/TimeEval). Please refer to its documentation in case of any detailed questions about API. 
@@ -103,5 +85,23 @@ If you use TimeEval in your project or research, please cite the demonstration p
   number = {12},
   pages = {3678--3681},
   doi = {10.14778/3554821.3554873}
+}
+```
+
+## ESA-ADB Citation
+
+If you refer to ESA-ADB in your work, please cite our paper:
+
+> Krzysztof Kotowski, Christoph Haskamp, Jacek Andrzejewski, Bogdan Ruszczak, Jakub Nalepa, Daniel Lakey, Peter Collins, Aybike Kolmas, Mauro Bartesaghi, Jose Martínez-Heras, and Gabriele De Canio.
+> European Space Agency Benchmark for Anomaly Detection in Satellite Telemetry. arXiv, 2024.
+> doi:[10.48550/arXiv.2406.17826](https://doi.org/10.48550/arXiv.2406.17826)
+
+```bibtex
+@article{kotowski_european_2024,
+  title = {European {Space} {Agency} {Benchmark} for {Anomaly} {Detection} in {Satellite} {Telemetry}},
+  author = {Kotowski, Krzysztof and Haskamp, Christoph and Andrzejewski, Jacek and Ruszczak, Bogdan and Nalepa, Jakub and Lakey, Daniel and Collins, Peter and Kolmas, Aybike and Bartesaghi, Mauro and Martinez-Heras, Jose and De Canio, Gabriele},
+  date = {2024},
+  publisher = {arXiv},
+  doi = {10.48550/arXiv.2406.17826}
 }
 ```
