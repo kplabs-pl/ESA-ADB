@@ -24,18 +24,7 @@ The introduction below describes how to reproduce results presented in the ESA-A
 - It is recommended to use Nvidia GPU with compute capability >= 7.1
 - It is recommended to use a machine with at least 64 GB RAM (32 GB is an absolute minimum for the whole pipeline)
 
-## Preparing datasets
-
-Download raw ESA Anomalies Dataset from the link https://doi.org/10.5281/zenodo.12528696 and put ESA-Mission1 and ESA-Mission2 folders in the "data" folder.
-
-### Generating preprocessed data for experiments
-
-There are separate script to generate preprocessed data for TimeEval framework for each mission. The scripts are located in notebooks\data-prep folder.
-- Mission1: Mission1_semisupervised_prep_from_raw.py
-- Mission2: Mission2_semisupervised_prep_from_raw.py
-
-The scripts generate all necessary files to data/preprocessed/multivariate folders and add records to data/preprocessed/datasets.csv if necessary (records for ESA-ADB are already added as a part of this repository). Note that the preprocessing may take a few hours on a standard PC.
-
+For Windows it is recommended to run the following command before cloning to prevent issues when running the docker containers: `git config --global core.autocrlf false`.
 ## Environment setup
 
 ### Python environment
@@ -44,12 +33,32 @@ The scripts generate all necessary files to data/preprocessed/multivariate folde
    Use the file [`environment.yml`](./environment.yml) for this:
    `conda env create --file environment.yml`. Note that you should **not** install TimeEval from PyPI. Our repository contains the modified version of TimeEval in the "timeeval" folder.
 3. Activate the new environment `conda activate timeeval`.
+4. Install the local version of TimeEval: `python setup.py install`
 
 ### Docker
 1. Install Docker Engine, version >= 23.
 2. Build Docker containers with algorithms of interest (e.g., listed in mission1_experiments.py) using instruction from README in the TimeEval-algorithms folder. 
    For our Telemanom-ESA, it is enough to run `sudo docker build -t registry.gitlab.hpi.de/akita/i/telemanom_esa ./telemanom_esa`.
    For our DC-VAE-ESA, it is enough to run `sudo docker build -t registry.gitlab.hpi.de/akita/i/dc_vae ./dc_vae`.
+
+## Preparing datasets
+
+Download raw ESA Anomalies Dataset from the link https://doi.org/10.5281/zenodo.12528696 and put ESA-Mission1 and ESA-Mission2 folders in the "data" folder.
+
+### Generating preprocessed data for experiments
+
+There are separate script to generate preprocessed data for TimeEval framework for each mission. The scripts are located in notebooks\data-prep folder. From the notebooks\data-prep folder run:
+
+Mission1: 
+```
+python Mission1_semisupervised_prep_from_raw.py ../../data/ESA-Mission1
+```
+Mission2: 
+```
+python Mission2_semiunsupervised_prep_from_raw.py ../../data/ESA-Mission2
+```
+
+The scripts generate all necessary files to data/preprocessed/multivariate folders and add records to data/preprocessed/datasets.csv if necessary (records for ESA-ADB are already added as a part of this repository). Note that the preprocessing may take a few hours on a standard PC.
 
 ## Running experiments
 There is a separate script in the main folder of the repo to run a full grid of experiments for each mission:
