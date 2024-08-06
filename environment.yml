@@ -4,7 +4,8 @@ channels:
 dependencies:
   - python>=3.7,<=3.9
   - pip>=20
-  - scikit-learn>=0.24.*
+  - requests==2.31.0
+  - scikit-learn>=0.24
   - matplotlib=3.5.*
   - numpy=1.21.*
   - pandas=1.5.*
