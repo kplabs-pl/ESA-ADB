@@ -33,7 +33,7 @@ For Windows it is recommended to run the following command before cloning to pre
    Use the file [`environment.yml`](./environment.yml) for this:
    `conda env create --file environment.yml`. Note that you should **not** install TimeEval from PyPI. Our repository contains the modified version of TimeEval in the "timeeval" folder.
 3. Activate the new environment `conda activate timeeval`.
-4. Install the local version of TimeEval: `python setup.py install`
+4. (This step is optional and is recommended only if you do not plan to modify the code of TimeEval. Otherwise, we recommend running scripts using paths relative to the main repo folder, so the timeeval imports are accessible to them.) Install the local version of TimeEval: `python setup.py install`
 
 ### Docker
 1. Install Docker Engine, version >= 23.
