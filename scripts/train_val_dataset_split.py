@@ -132,13 +132,6 @@ if __name__ == "__main__":
     )
     assert os.path.exists(target_subfolder), f"{target_subfolder} does not exist."
 
-    target_filepath = os.path.abspath(
-        os.path.join(
-            target_subfolder,
-            f"{dataset_name}.{dataset_split}.{split_suffix}.csv",
-        )
-    )
-
     print(
         f"Initializing DatasetManager from {data_processed_folder} for {collection}..."
     )
