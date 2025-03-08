@@ -18,7 +18,7 @@ data_processed_folder = os.path.abspath(os.path.join(data_raw_folder, "preproces
 def main():
     dm = DatasetManager(data_processed_folder)  # or test-cases directory
     collection = "ESA-Mission1"
-    datasets = dm.select(collection=collection)
+    datasets = dm.select(collection=collection, dataset="kaggle")
 
     target_channels = ["channel_12", "channel_13", "channel_14", "channel_15", "channel_16", "channel_17", "channel_18", "channel_19", "channel_20", "channel_21", "channel_22", "channel_23", "channel_24", "channel_25", "channel_26", "channel_27", "channel_28", "channel_29", "channel_30", "channel_31", "channel_32", "channel_33", "channel_34", "channel_35", "channel_36", "channel_37", "channel_38", "channel_39", "channel_40", "channel_41", "channel_42", "channel_43", "channel_44", "channel_45", "channel_46", "channel_47", "channel_48", "channel_49", "channel_50", "channel_51", "channel_52", "channel_57", "channel_58", "channel_59", "channel_60", "channel_61", "channel_62", "channel_63", "channel_64", "channel_65", "channel_66", "channel_70", "channel_71", "channel_72", "channel_73", "channel_74", "channel_75", "channel_76"]
     subset_channels = ["channel_41", "channel_42", "channel_43", "channel_44", "channel_45", "channel_46"]
@@ -29,12 +29,7 @@ def main():
     )
 
     beta = 0.5
-    metrics = [ESAScores(betas=beta, select_labels={"Category": ["Rare Event", "Anomaly"]}),
-               ESAScores(betas=beta, select_labels={"Category": ["Anomaly"]})]
-    ranking_metrics = [ChannelAwareFScore(beta=beta, select_labels={"Category": ["Rare Event", "Anomaly"]}),
-                       ChannelAwareFScore(beta=beta, select_labels={"Category": ["Anomaly"]}),
-                       ADTQC(select_labels={"Category": ["Rare Event", "Anomaly"]}),
-                       ADTQC(select_labels={"Category": ["Anomaly"]})]
+    metrics = [ESAScores(betas=beta, select_labels={"Category": ["Rare Event", "Anomaly"]})]
 
     labels_csv = Path(os.path.join(data_raw_folder, collection, "labels.csv"))
     test_dataset_path = Path(os.path.join(data_processed_folder, "multivariate", f"{collection}-semi-supervised", "84_months.test.csv"))
@@ -50,10 +45,7 @@ def main():
 
     timeeval = TimeEval(dm, datasets, algorithms,
                         metrics=metrics,
-                        ranking_metrics=ranking_metrics,
-                        resource_constraints=limits,
-                        labels_csv_path=labels_csv,
-                        test_dataset_path=test_dataset_path)
+                        resource_constraints=limits)
 
     timeeval.run()
     results = timeeval.get_results(aggregated=False)
