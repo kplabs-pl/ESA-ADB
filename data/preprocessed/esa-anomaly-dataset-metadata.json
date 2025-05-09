@@ -1092,12 +1092,12 @@
     "creator": {
         "@type": "sc:Organization",
         "name": "European Space Agency",
-        "url": "https://www.esa.int/",
+        "url": "https://www.esa.int"
     },
     "publisher": {
         "@type": "sc:Organization",
         "name": "European Space Agency",
-        "url": "https://www.esa.int/",
+        "url": "https://www.esa.int"
     },
     "dateModified": "2025-04-17",
     "@type": "sc:Dataset",
