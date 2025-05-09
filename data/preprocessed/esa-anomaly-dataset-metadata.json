@@ -1,0 +1,1109 @@
+{
+    "@context": {
+        "@language": "en",
+        "@vocab": "https://schema.org/",
+        "citeAs": "cr:citeAs",
+        "column": "cr:column",
+        "conformsTo": "dct:conformsTo",
+        "cr": "http://mlcommons.org/croissant/",
+        "data": {
+            "@id": "cr:data",
+            "@type": "@json"
+        },
+        "dataBiases": "cr:dataBiases",
+        "dataCollection": "cr:dataCollection",
+        "dataType": {
+            "@id": "cr:dataType",
+            "@type": "@vocab"
+        },
+        "dct": "http://purl.org/dc/terms/",
+        "extract": "cr:extract",
+        "examples": "cr:examples",
+        "field": "cr:field",
+        "fileProperty": "cr:fileProperty",
+        "fileObject": "cr:fileObject",
+        "fileSet": "cr:fileSet",
+        "format": "cr:format",
+        "includes": "cr:includes",
+        "isEnumeration": "cr:isEnumeration",
+        "isLiveDataset": "cr:isLiveDataset",
+        "jsonPath": "cr:jsonPath",
+        "key": "cr:key",
+        "md5": "cr:md5",
+        "parentField": "cr:parentField",
+        "path": "cr:path",
+        "personalSensitiveInformation": "cr:personalSensitiveInformation",
+        "rai": "cr:rai",
+        "recordSet": "cr:recordSet",
+        "references": "cr:references",
+        "regex": "cr:regex",
+        "repeated": "cr:repeated",
+        "replace": "cr:replace",
+        "sc": "https://schema.org/",
+        "separator": "cr:separator",
+        "source": "cr:source",
+        "subField": "cr:subField",
+        "transform": "cr:transform",
+        "wd": "https://www.wikidata.org/wiki/"
+    },
+    "alternateName": "ESA-AD",
+    "conformsTo": "http://mlcommons.org/croissant/1.0",
+    "license": {
+        "@type": "sc:CreativeWork",
+        "name": "Attribution 3.0 IGO (CC BY 3.0 IGO)",
+        "url": "https://creativecommons.org/licenses/by/3.0/igo/"
+    },
+    "distribution": [{
+            "contentUrl": "https://zenodo.org/records/15237121/files/ESA-Mission1.zip",
+            "contentSize": "3.8 GB",
+            "md5": "9770ad12ed730238f37c42d5c27ab436",
+            "encodingFormat": "application/zip",
+            "@id": "ESA-Mission1.zip",
+            "@type": "cr:FileObject",
+            "name": "ESA-Mission1.zip",
+            "description": "Archive containing data of the ESA-Mission1"
+        }, {
+            "containedIn": {
+                "@id": "ESA-Mission1.zip"
+            },
+            "encodingFormat": "application/zip",
+            "@id": "ESA-Mission1/channels_data",
+            "@type": "cr:FileSet",
+            "name": "channels_data",
+            "includes": "ESA-Mission1/channels/*.zip"
+        }, {
+            "containedIn": {
+                "@id": "ESA-Mission1.zip"
+            },
+            "encodingFormat": "application/zip",
+            "@id": "ESA-Mission1/telecommands_data",
+            "@type": "cr:FileSet",
+            "name": "telecommands_data",
+            "includes": "ESA-Mission1/telecommands/*.zip"
+        }, {
+            "contentUrl": "ESA-Mission1/anomaly_types.csv",
+            "containedIn": {
+                "@id": "ESA-Mission1.zip"
+            },
+            "encodingFormat": "text/csv",
+            "@id": "ESA-Mission1/anomaly_types.csv_fileobject",
+            "@type": "cr:FileObject",
+            "name": "anomaly_types.csv"
+        }, {
+            "contentUrl": "ESA-Mission1/channels.csv",
+            "containedIn": {
+                "@id": "ESA-Mission1.zip"
+            },
+            "encodingFormat": "text/csv",
+            "@id": "ESA-Mission1/channels.csv_fileobject",
+            "@type": "cr:FileObject",
+            "name": "channels.csv"
+        }, {
+            "contentUrl": "ESA-Mission1/labels.csv",
+            "containedIn": {
+                "@id": "ESA-Mission1.zip"
+            },
+            "encodingFormat": "text/csv",
+            "@id": "ESA-Mission1/labels.csv_fileobject",
+            "@type": "cr:FileObject",
+            "name": "labels.csv"
+        }, {
+            "contentUrl": "ESA-Mission1/telecommands.csv",
+            "containedIn": {
+                "@id": "ESA-Mission1.zip"
+            },
+            "encodingFormat": "text/csv",
+            "@id": "ESA-Mission1/telecommands.csv_fileobject",
+            "@type": "cr:FileObject",
+            "name": "telecommands.csv"
+        }, {
+            "contentUrl": "https://zenodo.org/records/15237121/files/ESA-Mission2.zip",
+            "contentSize": "4.1 GB",
+            "md5": "bfc72012691427d9327eb41f726ce45e",
+            "encodingFormat": "application/zip",
+            "@id": "ESA-Mission2.zip",
+            "@type": "cr:FileObject",
+            "name": "ESA-Mission2.zip",
+            "description": "Archive containing data of the ESA-Mission2"
+        }, {
+            "containedIn": {
+                "@id": "ESA-Mission2.zip"
+            },
+            "encodingFormat": "application/zip",
+            "@id": "ESA-Mission2/channels_data",
+            "@type": "cr:FileSet",
+            "name": "channels_data",
+            "includes": "ESA-Mission2/channels/*.zip"
+        }, {
+            "containedIn": {
+                "@id": "ESA-Mission2.zip"
+            },
+            "encodingFormat": "application/zip",
+            "@id": "ESA-Mission2/telecommands_data",
+            "@type": "cr:FileSet",
+            "name": "telecommands_data",
+            "includes": "ESA-Mission2/telecommands/*.zip"
+        }, {
+            "contentUrl": "ESA-Mission2/anomaly_types.csv",
+            "containedIn": {
+                "@id": "ESA-Mission2.zip"
+            },
+            "encodingFormat": "text/csv",
+            "@id": "ESA-Mission2/anomaly_types.csv_fileobject",
+            "@type": "cr:FileObject",
+            "name": "anomaly_types.csv"
+        }, {
+            "contentUrl": "ESA-Mission2/events.csv",
+            "containedIn": {
+                "@id": "ESA-Mission2.zip"
+            },
+            "encodingFormat": "text/csv",
+            "@id": "ESA-Mission2/events.csv_fileobject",
+            "@type": "cr:FileObject",
+            "name": "events.csv"
+        }, {
+            "contentUrl": "ESA-Mission2/channels.csv",
+            "containedIn": {
+                "@id": "ESA-Mission2.zip"
+            },
+            "encodingFormat": "text/csv",
+            "@id": "ESA-Mission2/channels.csv_fileobject",
+            "@type": "cr:FileObject",
+            "name": "channels.csv"
+        }, {
+            "contentUrl": "ESA-Mission2/labels.csv",
+            "containedIn": {
+                "@id": "ESA-Mission2.zip"
+            },
+            "encodingFormat": "text/csv",
+            "@id": "ESA-Mission2/labels.csv_fileobject",
+            "@type": "cr:FileObject",
+            "name": "labels.csv"
+        }, {
+            "contentUrl": "ESA-Mission2/telecommands.csv",
+            "containedIn": {
+                "@id": "ESA-Mission2.zip"
+            },
+            "encodingFormat": "text/csv",
+            "@id": "ESA-Mission2/telecommands.csv_fileobject",
+            "@type": "cr:FileObject",
+            "name": "telecommands.csv"
+        }, {
+            "contentUrl": "https://zenodo.org/records/15237121/files/ESA-Mission3.zip",
+            "contentSize": "3.7 GB",
+            "md5": "d63943f09c81378acd9fc5e565ecc66e",
+            "encodingFormat": "application/zip",
+            "@id": "ESA-Mission3.zip",
+            "@type": "cr:FileObject",
+            "name": "ESA-Mission3.zip",
+            "description": "Archive containing data of the ESA-Mission3"
+        }, {
+            "containedIn": {
+                "@id": "ESA-Mission3.zip"
+            },
+            "encodingFormat": "application/zip",
+            "@id": "ESA-Mission3/channels_data",
+            "@type": "cr:FileSet",
+            "name": "channels_data",
+            "includes": "ESA-Mission3/channels/*.zip"
+        }, {
+            "containedIn": {
+                "@id": "ESA-Mission3.zip"
+            },
+            "encodingFormat": "application/zip",
+            "@id": "ESA-Mission3/telecommands_data",
+            "@type": "cr:FileSet",
+            "name": "telecommands_data",
+            "includes": "ESA-Mission3/telecommands/*.zip"
+        }, {
+            "contentUrl": "ESA-Mission3/anomaly_types.csv",
+            "containedIn": {
+                "@id": "ESA-Mission3.zip"
+            },
+            "encodingFormat": "text/csv",
+            "@id": "ESA-Mission3/anomaly_types.csv_fileobject",
+            "@type": "cr:FileObject",
+            "name": "anomaly_types.csv"
+        }, {
+            "contentUrl": "ESA-Mission3/channels.csv",
+            "containedIn": {
+                "@id": "ESA-Mission3.zip"
+            },
+            "encodingFormat": "text/csv",
+            "@id": "ESA-Mission3/channels.csv_fileobject",
+            "@type": "cr:FileObject",
+            "name": "channels.csv"
+        }, {
+            "contentUrl": "ESA-Mission3/labels.csv",
+            "containedIn": {
+                "@id": "ESA-Mission3.zip"
+            },
+            "encodingFormat": "text/csv",
+            "@id": "ESA-Mission3/labels.csv_fileobject",
+            "@type": "cr:FileObject",
+            "name": "labels.csv"
+        }, {
+            "contentUrl": "ESA-Mission3/telecommands.csv",
+            "containedIn": {
+                "@id": "ESA-Mission3.zip"
+            },
+            "encodingFormat": "text/csv",
+            "@id": "ESA-Mission3/telecommands.csv_fileobject",
+            "@type": "cr:FileObject",
+            "name": "telecommands.csv"
+        }
+    ],
+    "recordSet": [{
+            "field": [{
+                    "dataType": ["sc:Text"],
+                    "source": {
+                        "fileObject": {
+                            "@id": "ESA-Mission1/anomaly_types.csv_fileobject"
+                        },
+                        "extract": {
+                            "column": "ID"
+                        }
+                    },
+                    "@id": "ESA-Mission1/anomaly_types.csv/ID",
+                    "@type": "cr:Field",
+                    "name": "ID"
+                }, {
+                    "dataType": ["sc:Text"],
+                    "source": {
+                        "fileObject": {
+                            "@id": "ESA-Mission1/anomaly_types.csv_fileobject"
+                        },
+                        "extract": {
+                            "column": "Class"
+                        }
+                    },
+                    "@id": "ESA-Mission1/anomaly_types.csv/Class",
+                    "@type": "cr:Field",
+                    "name": "Class"
+                }, {
+                    "dataType": ["sc:Text"],
+                    "source": {
+                        "fileObject": {
+                            "@id": "ESA-Mission1/anomaly_types.csv_fileobject"
+                        },
+                        "extract": {
+                            "column": "Subclass"
+                        }
+                    },
+                    "@id": "ESA-Mission1/anomaly_types.csv/Subclass",
+                    "@type": "cr:Field",
+                    "name": "Subclass"
+                }, {
+                    "dataType": ["sc:Text"],
+                    "source": {
+                        "fileObject": {
+                            "@id": "ESA-Mission1/anomaly_types.csv_fileobject"
+                        },
+                        "extract": {
+                            "column": "Category"
+                        }
+                    },
+                    "@id": "ESA-Mission1/anomaly_types.csv/Category",
+                    "@type": "cr:Field",
+                    "name": "Category"
+                }, {
+                    "dataType": ["sc:Text"],
+                    "source": {
+                        "fileObject": {
+                            "@id": "ESA-Mission1/anomaly_types.csv_fileobject"
+                        },
+                        "extract": {
+                            "column": "Dimensionality"
+                        }
+                    },
+                    "@id": "ESA-Mission1/anomaly_types.csv/Dimensionality",
+                    "@type": "cr:Field",
+                    "name": "Dimensionality"
+                }, {
+                    "dataType": ["sc:Text"],
+                    "source": {
+                        "fileObject": {
+                            "@id": "ESA-Mission1/anomaly_types.csv_fileobject"
+                        },
+                        "extract": {
+                            "column": "Locality"
+                        }
+                    },
+                    "@id": "ESA-Mission1/anomaly_types.csv/Locality",
+                    "@type": "cr:Field",
+                    "name": "Locality"
+                }, {
+                    "dataType": ["sc:Text"],
+                    "source": {
+                        "fileObject": {
+                            "@id": "ESA-Mission1/anomaly_types.csv_fileobject"
+                        },
+                        "extract": {
+                            "column": "Length"
+                        }
+                    },
+                    "@id": "ESA-Mission1/anomaly_types.csv/Length",
+                    "@type": "cr:Field",
+                    "name": "Length"
+                }
+            ],
+            "@id": "ESA-Mission1/anomaly_types.csv",
+            "@type": "cr:RecordSet",
+            "name": "anomaly_types.csv"
+        }, {
+            "field": [{
+                    "dataType": ["sc:Text"],
+                    "source": {
+                        "fileObject": {
+                            "@id": "ESA-Mission1/channels.csv_fileobject"
+                        },
+                        "extract": {
+                            "column": "Channel"
+                        }
+                    },
+                    "@id": "ESA-Mission1/channels.csv/Channel",
+                    "@type": "cr:Field",
+                    "name": "Channel"
+                }, {
+                    "dataType": ["sc:Text"],
+                    "source": {
+                        "fileObject": {
+                            "@id": "ESA-Mission1/channels.csv_fileobject"
+                        },
+                        "extract": {
+                            "column": "Subsystem"
+                        }
+                    },
+                    "@id": "ESA-Mission1/channels.csv/Subsystem",
+                    "@type": "cr:Field",
+                    "name": "Subsystem"
+                }, {
+                    "dataType": ["sc:Text"],
+                    "source": {
+                        "fileObject": {
+                            "@id": "ESA-Mission1/channels.csv_fileobject"
+                        },
+                        "extract": {
+                            "column": "Physical Unit"
+                        }
+                    },
+                    "@id": "ESA-Mission1/channels.csv/Physical\u002BUnit",
+                    "@type": "cr:Field",
+                    "name": "Physical Unit"
+                }, {
+                    "dataType": ["sc:Integer"],
+                    "source": {
+                        "fileObject": {
+                            "@id": "ESA-Mission1/channels.csv_fileobject"
+                        },
+                        "extract": {
+                            "column": "Group"
+                        }
+                    },
+                    "@id": "ESA-Mission1/channels.csv/Group",
+                    "@type": "cr:Field",
+                    "name": "Group"
+                }, {
+                    "dataType": ["sc:Boolean"],
+                    "source": {
+                        "fileObject": {
+                            "@id": "ESA-Mission1/channels.csv_fileobject"
+                        },
+                        "extract": {
+                            "column": "Target"
+                        }
+                    },
+                    "@id": "ESA-Mission1/channels.csv/Target",
+                    "@type": "cr:Field",
+                    "name": "Target"
+                }, {
+                    "dataType": ["sc:Boolean"],
+                    "source": {
+                        "fileObject": {
+                            "@id": "ESA-Mission1/channels.csv_fileobject"
+                        },
+                        "extract": {
+                            "column": "Categorical"
+                        }
+                    },
+                    "@id": "ESA-Mission1/channels.csv/Categorical",
+                    "@type": "cr:Field",
+                    "name": "Categorical"
+                }
+            ],
+            "@id": "ESA-Mission1/channels.csv",
+            "@type": "cr:RecordSet",
+            "name": "channels.csv"
+        }, {
+            "field": [{
+                    "dataType": ["sc:Text"],
+                    "source": {
+                        "fileObject": {
+                            "@id": "ESA-Mission1/labels.csv_fileobject"
+                        },
+                        "extract": {
+                            "column": "ID"
+                        }
+                    },
+                    "@id": "ESA-Mission1/labels.csv/ID",
+                    "@type": "cr:Field",
+                    "name": "ID"
+                }, {
+                    "dataType": ["sc:Text"],
+                    "source": {
+                        "fileObject": {
+                            "@id": "ESA-Mission1/labels.csv_fileobject"
+                        },
+                        "extract": {
+                            "column": "Channel"
+                        }
+                    },
+                    "@id": "ESA-Mission1/labels.csv/Channel",
+                    "@type": "cr:Field",
+                    "name": "Channel"
+                }, {
+                    "dataType": ["sc:Date"],
+                    "source": {
+                        "fileObject": {
+                            "@id": "ESA-Mission1/labels.csv_fileobject"
+                        },
+                        "extract": {
+                            "column": "StartTime"
+                        }
+                    },
+                    "@id": "ESA-Mission1/labels.csv/StartTime",
+                    "@type": "cr:Field",
+                    "name": "StartTime"
+                }, {
+                    "dataType": ["sc:Date"],
+                    "source": {
+                        "fileObject": {
+                            "@id": "ESA-Mission1/labels.csv_fileobject"
+                        },
+                        "extract": {
+                            "column": "EndTime"
+                        }
+                    },
+                    "@id": "ESA-Mission1/labels.csv/EndTime",
+                    "@type": "cr:Field",
+                    "name": "EndTime"
+                }
+            ],
+            "@id": "ESA-Mission1/labels.csv",
+            "@type": "cr:RecordSet",
+            "name": "labels.csv"
+        }, {
+            "field": [{
+                    "dataType": ["sc:Text"],
+                    "source": {
+                        "fileObject": {
+                            "@id": "ESA-Mission1/telecommands.csv_fileobject"
+                        },
+                        "extract": {
+                            "column": "Telecommand"
+                        }
+                    },
+                    "@id": "ESA-Mission1/telecommands.csv/Telecommand",
+                    "@type": "cr:Field",
+                    "name": "Telecommand"
+                }, {
+                    "dataType": ["sc:Integer"],
+                    "source": {
+                        "fileObject": {
+                            "@id": "ESA-Mission1/telecommands.csv_fileobject"
+                        },
+                        "extract": {
+                            "column": "Priority"
+                        }
+                    },
+                    "@id": "ESA-Mission1/telecommands.csv/Priority",
+                    "@type": "cr:Field",
+                    "name": "Priority"
+                }
+            ],
+            "@id": "ESA-Mission1/telecommands.csv",
+            "@type": "cr:RecordSet",
+            "name": "telecommands.csv"
+        }, {
+            "field": [{
+                    "dataType": ["sc:Text"],
+                    "source": {
+                        "fileObject": {
+                            "@id": "ESA-Mission2/anomaly_types.csv_fileobject"
+                        },
+                        "extract": {
+                            "column": "ID"
+                        }
+                    },
+                    "@id": "ESA-Mission2/anomaly_types.csv/ID",
+                    "@type": "cr:Field",
+                    "name": "ID"
+                }, {
+                    "dataType": ["sc:Text"],
+                    "source": {
+                        "fileObject": {
+                            "@id": "ESA-Mission2/anomaly_types.csv_fileobject"
+                        },
+                        "extract": {
+                            "column": "Class"
+                        }
+                    },
+                    "@id": "ESA-Mission2/anomaly_types.csv/Class",
+                    "@type": "cr:Field",
+                    "name": "Class"
+                }, {
+                    "dataType": ["sc:Text"],
+                    "source": {
+                        "fileObject": {
+                            "@id": "ESA-Mission2/anomaly_types.csv_fileobject"
+                        },
+                        "extract": {
+                            "column": "Subclass"
+                        }
+                    },
+                    "@id": "ESA-Mission2/anomaly_types.csv/Subclass",
+                    "@type": "cr:Field",
+                    "name": "Subclass"
+                }, {
+                    "dataType": ["sc:Text"],
+                    "source": {
+                        "fileObject": {
+                            "@id": "ESA-Mission2/anomaly_types.csv_fileobject"
+                        },
+                        "extract": {
+                            "column": "Category"
+                        }
+                    },
+                    "@id": "ESA-Mission2/anomaly_types.csv/Category",
+                    "@type": "cr:Field",
+                    "name": "Category"
+                }, {
+                    "dataType": ["sc:Text"],
+                    "source": {
+                        "fileObject": {
+                            "@id": "ESA-Mission2/anomaly_types.csv_fileobject"
+                        },
+                        "extract": {
+                            "column": "Dimensionality"
+                        }
+                    },
+                    "@id": "ESA-Mission2/anomaly_types.csv/Dimensionality",
+                    "@type": "cr:Field",
+                    "name": "Dimensionality"
+                }, {
+                    "dataType": ["sc:Text"],
+                    "source": {
+                        "fileObject": {
+                            "@id": "ESA-Mission2/anomaly_types.csv_fileobject"
+                        },
+                        "extract": {
+                            "column": "Locality"
+                        }
+                    },
+                    "@id": "ESA-Mission2/anomaly_types.csv/Locality",
+                    "@type": "cr:Field",
+                    "name": "Locality"
+                }, {
+                    "dataType": ["sc:Text"],
+                    "source": {
+                        "fileObject": {
+                            "@id": "ESA-Mission2/anomaly_types.csv_fileobject"
+                        },
+                        "extract": {
+                            "column": "Length"
+                        }
+                    },
+                    "@id": "ESA-Mission2/anomaly_types.csv/Length",
+                    "@type": "cr:Field",
+                    "name": "Length"
+                }
+            ],
+            "@id": "ESA-Mission2/anomaly_types.csv",
+            "@type": "cr:RecordSet",
+            "name": "anomaly_types.csv"
+        }, {
+            "field": [{
+                    "dataType": ["sc:Text"],
+                    "source": {
+                        "fileObject": {
+                            "@id": "ESA-Mission2/channels.csv_fileobject"
+                        },
+                        "extract": {
+                            "column": "Channel"
+                        }
+                    },
+                    "@id": "ESA-Mission2/channels.csv/Channel",
+                    "@type": "cr:Field",
+                    "name": "Channel"
+                }, {
+                    "dataType": ["sc:Text"],
+                    "source": {
+                        "fileObject": {
+                            "@id": "ESA-Mission2/channels.csv_fileobject"
+                        },
+                        "extract": {
+                            "column": "Subsystem"
+                        }
+                    },
+                    "@id": "ESA-Mission2/channels.csv/Subsystem",
+                    "@type": "cr:Field",
+                    "name": "Subsystem"
+                }, {
+                    "dataType": ["sc:Text"],
+                    "source": {
+                        "fileObject": {
+                            "@id": "ESA-Mission2/channels.csv_fileobject"
+                        },
+                        "extract": {
+                            "column": "Physical Unit"
+                        }
+                    },
+                    "@id": "ESA-Mission2/channels.csv/Physical\u002BUnit",
+                    "@type": "cr:Field",
+                    "name": "Physical Unit"
+                }, {
+                    "dataType": ["sc:Integer"],
+                    "source": {
+                        "fileObject": {
+                            "@id": "ESA-Mission2/channels.csv_fileobject"
+                        },
+                        "extract": {
+                            "column": "Group"
+                        }
+                    },
+                    "@id": "ESA-Mission2/channels.csv/Group",
+                    "@type": "cr:Field",
+                    "name": "Group"
+                }, {
+                    "dataType": ["sc:Boolean"],
+                    "source": {
+                        "fileObject": {
+                            "@id": "ESA-Mission2/channels.csv_fileobject"
+                        },
+                        "extract": {
+                            "column": "Target"
+                        }
+                    },
+                    "@id": "ESA-Mission2/channels.csv/Target",
+                    "@type": "cr:Field",
+                    "name": "Target"
+                }, {
+                    "dataType": ["sc:Boolean"],
+                    "source": {
+                        "fileObject": {
+                            "@id": "ESA-Mission2/channels.csv_fileobject"
+                        },
+                        "extract": {
+                            "column": "Categorical"
+                        }
+                    },
+                    "@id": "ESA-Mission2/channels.csv/Categorical",
+                    "@type": "cr:Field",
+                    "name": "Categorical"
+                }
+            ],
+            "@id": "ESA-Mission2/channels.csv",
+            "@type": "cr:RecordSet",
+            "name": "channels.csv"
+        }, {
+            "field": [{
+                    "dataType": ["sc:Text"],
+                    "source": {
+                        "fileObject": {
+                            "@id": "ESA-Mission2/events.csv_fileobject"
+                        },
+                        "extract": {
+                            "column": "Event"
+                        }
+                    },
+                    "@id": "ESA-Mission2/events.csv/Event",
+                    "@type": "cr:Field",
+                    "name": "Event"
+                }, {
+                    "dataType": ["sc:Date"],
+                    "source": {
+                        "fileObject": {
+                            "@id": "ESA-Mission2/events.csv_fileobject"
+                        },
+                        "extract": {
+                            "column": "StartTime"
+                        }
+                    },
+                    "@id": "ESA-Mission2/events.csv/StartTime",
+                    "@type": "cr:Field",
+                    "name": "StartTime"
+                }, {
+                    "dataType": ["sc:Date"],
+                    "source": {
+                        "fileObject": {
+                            "@id": "ESA-Mission2/events.csv_fileobject"
+                        },
+                        "extract": {
+                            "column": "EndTime"
+                        }
+                    },
+                    "@id": "ESA-Mission2/events.csv/EndTime",
+                    "@type": "cr:Field",
+                    "name": "EndTime"
+                }
+            ],
+            "@id": "ESA-Mission2/events.csv",
+            "@type": "cr:RecordSet",
+            "name": "events.csv"
+        }, {
+            "field": [{
+                    "dataType": ["sc:Text"],
+                    "source": {
+                        "fileObject": {
+                            "@id": "ESA-Mission2/labels.csv_fileobject"
+                        },
+                        "extract": {
+                            "column": "ID"
+                        }
+                    },
+                    "@id": "ESA-Mission2/labels.csv/ID",
+                    "@type": "cr:Field",
+                    "name": "ID"
+                }, {
+                    "dataType": ["sc:Text"],
+                    "source": {
+                        "fileObject": {
+                            "@id": "ESA-Mission2/labels.csv_fileobject"
+                        },
+                        "extract": {
+                            "column": "Channel"
+                        }
+                    },
+                    "@id": "ESA-Mission2/labels.csv/Channel",
+                    "@type": "cr:Field",
+                    "name": "Channel"
+                }, {
+                    "dataType": ["sc:Date"],
+                    "source": {
+                        "fileObject": {
+                            "@id": "ESA-Mission2/labels.csv_fileobject"
+                        },
+                        "extract": {
+                            "column": "StartTime"
+                        }
+                    },
+                    "@id": "ESA-Mission2/labels.csv/StartTime",
+                    "@type": "cr:Field",
+                    "name": "StartTime"
+                }, {
+                    "dataType": ["sc:Date"],
+                    "source": {
+                        "fileObject": {
+                            "@id": "ESA-Mission2/labels.csv_fileobject"
+                        },
+                        "extract": {
+                            "column": "EndTime"
+                        }
+                    },
+                    "@id": "ESA-Mission2/labels.csv/EndTime",
+                    "@type": "cr:Field",
+                    "name": "EndTime"
+                }
+            ],
+            "@id": "ESA-Mission2/labels.csv",
+            "@type": "cr:RecordSet",
+            "name": "labels.csv"
+        }, {
+            "field": [{
+                    "dataType": ["sc:Text"],
+                    "source": {
+                        "fileObject": {
+                            "@id": "ESA-Mission2/telecommands.csv_fileobject"
+                        },
+                        "extract": {
+                            "column": "Telecommand"
+                        }
+                    },
+                    "@id": "ESA-Mission2/telecommands.csv/Telecommand",
+                    "@type": "cr:Field",
+                    "name": "Telecommand"
+                }, {
+                    "dataType": ["sc:Integer"],
+                    "source": {
+                        "fileObject": {
+                            "@id": "ESA-Mission2/telecommands.csv_fileobject"
+                        },
+                        "extract": {
+                            "column": "Priority"
+                        }
+                    },
+                    "@id": "ESA-Mission2/telecommands.csv/Priority",
+                    "@type": "cr:Field",
+                    "name": "Priority"
+                }
+            ],
+            "@id": "ESA-Mission2/telecommands.csv",
+            "@type": "cr:RecordSet",
+            "name": "telecommands.csv"
+        }, {
+            "field": [{
+                    "dataType": ["sc:Text"],
+                    "source": {
+                        "fileObject": {
+                            "@id": "ESA-Mission3/anomaly_types.csv_fileobject"
+                        },
+                        "extract": {
+                            "column": "ID"
+                        }
+                    },
+                    "@id": "ESA-Mission3/anomaly_types.csv/ID",
+                    "@type": "cr:Field",
+                    "name": "ID"
+                }, {
+                    "dataType": ["sc:Text"],
+                    "source": {
+                        "fileObject": {
+                            "@id": "ESA-Mission3/anomaly_types.csv_fileobject"
+                        },
+                        "extract": {
+                            "column": "Class"
+                        }
+                    },
+                    "@id": "ESA-Mission3/anomaly_types.csv/Class",
+                    "@type": "cr:Field",
+                    "name": "Class"
+                }, {
+                    "dataType": ["sc:Text"],
+                    "source": {
+                        "fileObject": {
+                            "@id": "ESA-Mission3/anomaly_types.csv_fileobject"
+                        },
+                        "extract": {
+                            "column": "Subclass"
+                        }
+                    },
+                    "@id": "ESA-Mission3/anomaly_types.csv/Subclass",
+                    "@type": "cr:Field",
+                    "name": "Subclass"
+                }, {
+                    "dataType": ["sc:Text"],
+                    "source": {
+                        "fileObject": {
+                            "@id": "ESA-Mission3/anomaly_types.csv_fileobject"
+                        },
+                        "extract": {
+                            "column": "Category"
+                        }
+                    },
+                    "@id": "ESA-Mission3/anomaly_types.csv/Category",
+                    "@type": "cr:Field",
+                    "name": "Category"
+                }, {
+                    "dataType": ["sc:Text"],
+                    "source": {
+                        "fileObject": {
+                            "@id": "ESA-Mission3/anomaly_types.csv_fileobject"
+                        },
+                        "extract": {
+                            "column": "Dimensionality"
+                        }
+                    },
+                    "@id": "ESA-Mission3/anomaly_types.csv/Dimensionality",
+                    "@type": "cr:Field",
+                    "name": "Dimensionality"
+                }, {
+                    "dataType": ["sc:Text"],
+                    "source": {
+                        "fileObject": {
+                            "@id": "ESA-Mission3/anomaly_types.csv_fileobject"
+                        },
+                        "extract": {
+                            "column": "Locality"
+                        }
+                    },
+                    "@id": "ESA-Mission3/anomaly_types.csv/Locality",
+                    "@type": "cr:Field",
+                    "name": "Locality"
+                }, {
+                    "dataType": ["sc:Text"],
+                    "source": {
+                        "fileObject": {
+                            "@id": "ESA-Mission3/anomaly_types.csv_fileobject"
+                        },
+                        "extract": {
+                            "column": "Length"
+                        }
+                    },
+                    "@id": "ESA-Mission3/anomaly_types.csv/Length",
+                    "@type": "cr:Field",
+                    "name": "Length"
+                }
+            ],
+            "@id": "ESA-Mission3/anomaly_types.csv",
+            "@type": "cr:RecordSet",
+            "name": "anomaly_types.csv"
+        }, {
+            "field": [{
+                    "dataType": ["sc:Text"],
+                    "source": {
+                        "fileObject": {
+                            "@id": "ESA-Mission3/channels.csv_fileobject"
+                        },
+                        "extract": {
+                            "column": "Channel"
+                        }
+                    },
+                    "@id": "ESA-Mission3/channels.csv/Channel",
+                    "@type": "cr:Field",
+                    "name": "Channel"
+                }, {
+                    "dataType": ["sc:Text"],
+                    "source": {
+                        "fileObject": {
+                            "@id": "ESA-Mission3/channels.csv_fileobject"
+                        },
+                        "extract": {
+                            "column": "Subsystem"
+                        }
+                    },
+                    "@id": "ESA-Mission3/channels.csv/Subsystem",
+                    "@type": "cr:Field",
+                    "name": "Subsystem"
+                }, {
+                    "dataType": ["sc:Text"],
+                    "source": {
+                        "fileObject": {
+                            "@id": "ESA-Mission3/channels.csv_fileobject"
+                        },
+                        "extract": {
+                            "column": "Physical Unit"
+                        }
+                    },
+                    "@id": "ESA-Mission3/channels.csv/Physical\u002BUnit",
+                    "@type": "cr:Field",
+                    "name": "Physical Unit"
+                }, {
+                    "dataType": ["sc:Integer"],
+                    "source": {
+                        "fileObject": {
+                            "@id": "ESA-Mission3/channels.csv_fileobject"
+                        },
+                        "extract": {
+                            "column": "Group"
+                        }
+                    },
+                    "@id": "ESA-Mission3/channels.csv/Group",
+                    "@type": "cr:Field",
+                    "name": "Group"
+                }, {
+                    "dataType": ["sc:Boolean"],
+                    "source": {
+                        "fileObject": {
+                            "@id": "ESA-Mission3/channels.csv_fileobject"
+                        },
+                        "extract": {
+                            "column": "Target"
+                        }
+                    },
+                    "@id": "ESA-Mission3/channels.csv/Target",
+                    "@type": "cr:Field",
+                    "name": "Target"
+                }, {
+                    "dataType": ["sc:Boolean"],
+                    "source": {
+                        "fileObject": {
+                            "@id": "ESA-Mission3/channels.csv_fileobject"
+                        },
+                        "extract": {
+                            "column": "Categorical"
+                        }
+                    },
+                    "@id": "ESA-Mission3/channels.csv/Categorical",
+                    "@type": "cr:Field",
+                    "name": "Categorical"
+                }
+            ],
+            "@id": "ESA-Mission3/channels.csv",
+            "@type": "cr:RecordSet",
+            "name": "channels.csv"
+        }, {
+            "field": [{
+                    "dataType": ["sc:Text"],
+                    "source": {
+                        "fileObject": {
+                            "@id": "ESA-Mission3/labels.csv_fileobject"
+                        },
+                        "extract": {
+                            "column": "ID"
+                        }
+                    },
+                    "@id": "ESA-Mission3/labels.csv/ID",
+                    "@type": "cr:Field",
+                    "name": "ID"
+                }, {
+                    "dataType": ["sc:Text"],
+                    "source": {
+                        "fileObject": {
+                            "@id": "ESA-Mission3/labels.csv_fileobject"
+                        },
+                        "extract": {
+                            "column": "Channel"
+                        }
+                    },
+                    "@id": "ESA-Mission3/labels.csv/Channel",
+                    "@type": "cr:Field",
+                    "name": "Channel"
+                }, {
+                    "dataType": ["sc:Date"],
+                    "source": {
+                        "fileObject": {
+                            "@id": "ESA-Mission3/labels.csv_fileobject"
+                        },
+                        "extract": {
+                            "column": "StartTime"
+                        }
+                    },
+                    "@id": "ESA-Mission3/labels.csv/StartTime",
+                    "@type": "cr:Field",
+                    "name": "StartTime"
+                }, {
+                    "dataType": ["sc:Date"],
+                    "source": {
+                        "fileObject": {
+                            "@id": "ESA-Mission3/labels.csv_fileobject"
+                        },
+                        "extract": {
+                            "column": "EndTime"
+                        }
+                    },
+                    "@id": "ESA-Mission3/labels.csv/EndTime",
+                    "@type": "cr:Field",
+                    "name": "EndTime"
+                }
+            ],
+            "@id": "ESA-Mission3/labels.csv",
+            "@type": "cr:RecordSet",
+            "name": "labels.csv"
+        }
+    ],
+    "version": 1,
+    "keywords": ["anomaly detection", "telemetry", "satellite telemetry", "european space agency", "benchmark", "telecommands", "space operations", "time series"],
+    "isAccessibleForFree": true,
+    "includedInDataCatalog": {
+        "@type": "sc:DataCatalog",
+        "name": "Zenodo",
+        "url": "https://www.zenodo.org"
+    },
+    "creator": {
+        "@type": "sc:Organization",
+        "name": "European Space Agency",
+        "url": "https://www.esa.int/",
+    },
+    "publisher": {
+        "@type": "sc:Organization",
+        "name": "European Space Agency",
+        "url": "https://www.esa.int/",
+    },
+    "dateModified": "2025-04-17",
+    "@type": "sc:Dataset",
+    "name": "ESA Anomaly Dataset",
+    "datePublished": "2024-06-25",
+    "citeAs": "@article{kotowski_european_2024,title = {European {Space} {Agency} {Benchmark} for {Anomaly} {Detection} in {Satellite} {Telemetry}},url = {http://arxiv.org/abs/2406.17826},author = {Kotowski, Krzysztof and Haskamp, Christoph and Andrzejewski, Jacek and Ruszczak, Bogdan and Nalepa, Jakub and Lakey, Daniel and Collins, Peter and Kolmas, Aybike and Bartesaghi, Mauro and Martinez-Heras, Jose and De Canio, Gabriele},year = {2024}}",
+    "url": "https://zenodo.org/records/15237121",
+    "description": "ESA Anomaly Dataset is the first large-scale, real-life satellite telemetry dataset with curated anomaly annotations originated from three ESA missions. We hope that this unique dataset will allow researchers and scientists from academia, research institutes, national and international space agencies, and industry to benchmark models and approaches on a common baseline as well as research and develop novel, computational-efficient approaches for anomaly detection in satellite telemetry data.\n\nThe dataset results from the work of an 18-month project carried by an industry Consortium composed of Airbus Defence and Space, KP Labs and the European Space Agency’s European Space Operations Centre. The project, funded by the European Space Agency (ESA), is part of the Artificial Intelligence for Automation (A²I) Roadmap (De Canio et al., 2023), a large endeavour started in 2021 to automate space operations by leveraging artificial intelligence.\n\nFurther details can be found on:\n- arXiv: https://arxiv.org/abs/2406.17826\n- Github: https://github.com/kplabs-pl/ESA-ADB\n\n**DOI**\n10.5281/zenodo.12528695\n**Resource type**\nDataset\n**Publisher**\nEuropean Space Agency"
+}
