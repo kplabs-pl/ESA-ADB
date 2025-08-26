@@ -1,6 +1,0 @@
-statsmodels
-numpy
-pandas
-scipy
-rstl
-pytz

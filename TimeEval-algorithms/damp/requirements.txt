@@ -1,4 +1,0 @@
-numpy
-pandas
-stumpy==1.11.1
-sklearn

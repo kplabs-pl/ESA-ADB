@@ -1,3 +1,0 @@
-pylibspot
-pandas
-numpy

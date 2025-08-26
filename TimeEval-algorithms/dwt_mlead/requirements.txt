@@ -1,4 +1,0 @@
-numpy
-pandas
-scikit-learn
-pywavelets==1.1.1

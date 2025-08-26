@@ -1,5 +1,0 @@
-numpy
-cython
-pathlib
-eif
-pandas
