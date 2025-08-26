@@ -57,6 +57,7 @@ class AlgorithmArgs(argparse.Namespace):
         self._select_input_and_target_channels(data_columns)
 
         dataset, data_columns, all_used_anomaly_columns = self._unravel_global_annotation(dataset, data_columns)
+        dataset = self._get_valid_channels(dataset)
 
         self._map_channels_to_indices(data_columns)
 
@@ -68,7 +69,7 @@ class AlgorithmArgs(argparse.Namespace):
     def _read_dataset(self):
         columns = pd.read_csv(self.dataInput, index_col="timestamp", nrows=0).columns.tolist()
         anomaly_columns = [x for x in columns if x.startswith("is_anomaly")]
-        data_columns = columns[:-len(anomaly_columns)]
+        data_columns = columns[:-len(anomaly_columns)] if anomaly_columns else columns
 
         dtypes = {col: np.float32 for col in data_columns}
         dtypes.update({col: np.uint8 for col in anomaly_columns})
@@ -89,7 +90,6 @@ class AlgorithmArgs(argparse.Namespace):
         self.customParameters.target_channels = select_channels(self.customParameters.target_channels, data_columns,
                                                                 "target")
 
-    # Remove unused columns from dataset
     def _unravel_global_annotation(self, dataset, data_columns):
         all_used_channels = list(
             dict.fromkeys(self.customParameters.input_channels + self.customParameters.target_channels))
@@ -99,10 +99,16 @@ class AlgorithmArgs(argparse.Namespace):
         if "is_anomaly" in dataset.columns and len(set(dataset.columns) & set(all_used_anomaly_columns)) == 0:
             for c in all_used_anomaly_columns:
                 dataset[c] = dataset["is_anomaly"]
-            dataset = dataset.drop(columns="is_anomaly")
+            dataset.drop(columns="is_anomaly", inplace=True)
 
-        dataset = dataset.loc[:, all_used_channels + all_used_anomaly_columns]
-        return dataset, all_used_channels, all_used_anomaly_columns
+        return dataset, data_columns, all_used_anomaly_columns
+
+    def _get_valid_channels(self, dataset):
+        all_used_channels = list(
+            dict.fromkeys(self.customParameters.input_channels + self.customParameters.target_channels))
+        all_used_anomaly_columns = [f"is_anomaly_{channel}" for channel in all_used_channels]
+
+        return dataset.loc[:, all_used_channels + all_used_anomaly_columns]
 
     def _map_channels_to_indices(self, data_columns):
         self.customParameters.input_channel_indices = [data_columns.index(x) for x in

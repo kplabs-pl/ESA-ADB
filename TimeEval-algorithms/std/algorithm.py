@@ -69,8 +69,7 @@ def get_valid_channels(raw_channels: list[str], data_cols: list[str], sort: bool
         print(f"No target_channels provided. Using all data columns: {data_cols}")
         valid_channels = data_cols
     else:
-        seen = set()
-        valid_channels = [ch for ch in raw_channels if ch in data_cols and not (ch in seen or seen.add(ch))]
+        valid_channels = list(dict.fromkeys([ch for ch in raw_channels if ch in data_cols]))
         if not valid_channels:
             print(f"No valid target channels found in dataset, falling back to all data columns.")
             valid_channels = data_cols
