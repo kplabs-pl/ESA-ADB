@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 import pickle
 
-from typing import List
+from typing import List, Tuple
 from dataclasses import dataclass
 from pyod.models.knn import KNN
 
@@ -43,60 +43,112 @@ def set_random_state(config: AlgorithmArgs) -> None:
     np.random.seed(seed)
 
 
-def load_data(config: AlgorithmArgs) -> np.ndarray:
-    print(f"Loading: {config.dataInput}")
-    columns = pd.read_csv(config.dataInput, index_col="timestamp", nrows=0).columns.tolist()
-    anomaly_columns = [x for x in columns if x.startswith("is_anomaly")]
-    data_columns = columns[:-len(anomaly_columns)]
 
+def get_valid_channels(raw_channels: List[str], data_cols: List[str]) -> List[str]:
+    if not raw_channels:
+        print(f"No target_channels provided. Using all data columns (original order): {data_cols}")
+        return data_cols
+    else:
+        filtered = [ch for ch in raw_channels if ch in data_cols]
+        valid_channels = list(dict.fromkeys(filtered))
+
+        if not valid_channels:
+            print("No valid target channels found. Falling back to all data columns.")
+            return data_cols
+
+        return valid_channels
+
+
+
+def get_columns(file_path: str) -> Tuple[List[str], List[str]]:
+    columns = pd.read_csv(file_path, index_col="timestamp", nrows=0).columns.tolist()
+    anomaly_columns = [x for x in columns if x.startswith("is_anomaly")]
+    data_columns = columns[:-len(anomaly_columns)] if anomaly_columns else columns
+    return data_columns, anomaly_columns
+
+
+def load_dataset(file_path: str, data_columns: List[str], anomaly_columns: List[str]) -> pd.DataFrame:
     dtypes = {col: np.float32 for col in data_columns}
     dtypes.update({col: np.uint8 for col in anomaly_columns})
-    dataset = pd.read_csv(config.dataInput, index_col="timestamp", parse_dates=True, dtype=dtypes)
+    return pd.read_csv(file_path, index_col="timestamp", parse_dates=True, dtype=dtypes)
 
-    if config.customParameters.target_channels is None or len(
-            set(config.customParameters.target_channels).intersection(data_columns)) == 0:
-        config.customParameters.target_channels = data_columns
-        print(
-            f"Input channels not given or not present in the data, selecting all the channels: {config.customParameters.target_channels}")
-        all_used_channels = [x for x in data_columns if x in set(config.customParameters.target_channels)]
-        all_used_anomaly_columns = [f"is_anomaly_{channel}" for channel in all_used_channels]
-    else:
-        config.customParameters.target_channels = [x for x in config.customParameters.target_channels if x in data_columns]
 
-        # Remove unused columns from dataset
-        all_used_channels = [x for x in data_columns if x in set(config.customParameters.target_channels)]
-        all_used_anomaly_columns = [f"is_anomaly_{channel}" for channel in all_used_channels]
-        if len(anomaly_columns) == 1 and anomaly_columns[0] == "is_anomaly":  # Handle datasets with only one global is_anomaly column
-            for c in all_used_anomaly_columns:
-                dataset[c] = dataset["is_anomaly"]
-            dataset = dataset.drop(columns="is_anomaly")
-        dataset = dataset.loc[:, all_used_channels + all_used_anomaly_columns]
+def handle_global_anomaly_column(dataset: pd.DataFrame, anomaly_columns: List[str],
+                                 used_channels: List[str]) -> pd.DataFrame:
+    if len(anomaly_columns) == 1 and anomaly_columns[0] == "is_anomaly": # Handle datasets with only one global is_anomaly column
+        for ch in used_channels:
+            dataset[f"is_anomaly_{ch}"] = dataset["is_anomaly"]
+        dataset = dataset.drop(columns="is_anomaly")
+    return dataset
 
-    labels = dataset[all_used_anomaly_columns].to_numpy()
-    dataset = dataset[all_used_channels].to_numpy()
-    meansOutput = str(config.modelOutput) + ".means.txt"
-    stdsOutput = str(config.modelOutput) + ".stds.txt"
-    if config.executionType == "train":
+
+def filter_to_used_columns(dataset: pd.DataFrame, used_channels: List[str]) -> Tuple[pd.DataFrame, List[str]]:
+    anomaly_cols = [f"is_anomaly_{ch}" for ch in used_channels]
+    # Remove unused columns from dataset
+    dataset = dataset.loc[:, used_channels + anomaly_cols]
+    return dataset, anomaly_cols
+
+
+def extract_labels_matrix(dataset: pd.DataFrame, anomaly_cols: List[str]) -> np.ndarray:
+    return dataset[anomaly_cols].to_numpy()
+
+
+def normalize_dataset(dataset: np.ndarray, labels: np.ndarray, model_output_path: str, mode: str) -> Tuple[
+    np.ndarray, np.ndarray, np.ndarray]:
+    means_path = model_output_path + ".means.txt"
+    stds_path = model_output_path + ".stds.txt"
+
+    if mode == "train":
         train_means = [np.mean(dataset[:, i][labels[:, i] == 0]) for i in range(dataset.shape[-1])]
-        np.savetxt(meansOutput, train_means)
+        np.savetxt(means_path, train_means)
 
         train_stds = [np.std(dataset[:, i][labels[:, i] == 0].astype(float)) for i in range(dataset.shape[-1])]
         train_stds = np.asarray(train_stds)
         train_stds = np.where(train_stds == 0, 1, train_stds)  # do not divide constant signals by zero
-        np.savetxt(stdsOutput, train_stds)
-    elif config.executionType == "execute":
-        train_means = np.atleast_1d(np.loadtxt(meansOutput))
-        train_stds = np.atleast_1d(np.loadtxt(stdsOutput))
+        np.savetxt(stds_path, train_stds)
+    elif mode == "execute":
+        train_means = np.atleast_1d(np.loadtxt(means_path))
+        train_stds = np.atleast_1d(np.loadtxt(stds_path))
 
-    labels = labels.max(axis=1)
+    normalized_data = (dataset - train_means) / train_stds
+    return normalized_data, train_means, train_stds
+
+
+def load_data(config) -> Tuple[np.ndarray, float]:
+    print(f"Loading: {config.dataInput}")
+
+    data_columns, anomaly_columns = get_columns(config.dataInput)
+    dataset = load_dataset(config.dataInput, data_columns, anomaly_columns)
+
+    raw_channels = config.customParameters.target_channels
+    target_channels = get_valid_channels(raw_channels, data_columns)
+    config.customParameters.target_channels = target_channels
+
+    used_channels = [ch for ch in data_columns if ch in set(target_channels)]
+    used_anomaly_cols = [f"is_anomaly_{ch}" for ch in used_channels]
+
+    dataset = handle_global_anomaly_column(dataset, anomaly_columns, used_channels)
+
+    dataset, used_anomaly_cols = filter_to_used_columns(dataset, used_channels)
+
+    labels_matrix = extract_labels_matrix(dataset, used_anomaly_cols)
+
+    data_matrix = dataset[used_channels].to_numpy()
+
+    data_matrix, train_means, train_stds = normalize_dataset(
+        data_matrix, labels_matrix, str(config.modelOutput), config.executionType
+    )
+
+    labels = labels_matrix.max(axis=1)
     labels[labels > 0] = 1
+
     contamination = labels.sum() / len(labels)
     # Use smallest positive float as contamination if there are no anomalies in dataset
     contamination = np.nextafter(0, 1) if contamination == 0. else contamination
 
-    dataset = (dataset - train_means)/train_stds
+    return data_matrix, contamination
 
-    return dataset, contamination
+
 
 
 def train(config: AlgorithmArgs):
