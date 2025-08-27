@@ -6,8 +6,10 @@ import numpy as np
 import pandas as pd
 import pickle
 
+from typing import Tuple, List
 from typing import List
 from dataclasses import dataclass
+
 
 
 @dataclass
@@ -28,53 +30,83 @@ class AlgorithmArgs(argparse.Namespace):
         return AlgorithmArgs(**args)
 
 
-def load_data(config: AlgorithmArgs) -> np.ndarray:
+def load_data(config: AlgorithmArgs) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     print(f"Loading: {config.dataInput}")
-    columns = pd.read_csv(config.dataInput, index_col="timestamp", nrows=0).columns.tolist()
-    anomaly_columns = [x for x in columns if x.startswith("is_anomaly")]
-    data_columns = columns[:-len(anomaly_columns)]
 
-    dtypes = {col: np.float32 for col in data_columns}
-    dtypes.update({col: np.uint8 for col in anomaly_columns})
-    dataset = pd.read_csv(config.dataInput, index_col="timestamp", parse_dates=True, dtype=dtypes)
+    data_columns, anomaly_columns = get_columns_names(config.dataInput)
+    dataset = read_dataset(config.dataInput, data_columns, anomaly_columns)
 
-    if config.customParameters.target_channels is None or len(
-            set(config.customParameters.target_channels).intersection(data_columns)) == 0:
-        config.customParameters.target_channels = data_columns
-        print(
-            f"Input channels not given or not present in the data, selecting all the channels: {config.customParameters.target_channels}")
-        all_used_channels = [x for x in data_columns if x in set(config.customParameters.target_channels)]
-        all_used_anomaly_columns = [f"is_anomaly_{channel}" for channel in all_used_channels]
+    target_channels = get_valid_channels(config.customParameters.target_channels, data_columns)
+    config.customParameters.target_channels = target_channels
+
+    target_anomaly_columns = [f"is_anomaly_{ch}" for ch in target_channels]
+
+    dataset = unravel_global_annotation(dataset, anomaly_columns, target_anomaly_columns)
+    dataset = dataset.loc[:, target_channels + target_anomaly_columns]
+
+    data = dataset[target_channels].to_numpy()
+    labels = dataset[target_anomaly_columns].to_numpy()
+
+    means, stds = get_means_stds(data, labels, config)
+
+    return data, means, stds
+
+def get_columns_names(filepath: str) -> tuple[list[str], list[str]]:
+    columns = pd.read_csv(filepath, index_col="timestamp", nrows=0).columns.tolist()
+    target_anomaly_columns = [col for col in columns if col.startswith("is_anomaly")]
+    data_cols = columns[:-len(target_anomaly_columns)] if target_anomaly_columns else columns
+    return data_cols, target_anomaly_columns
+
+
+def read_dataset(filepath: str, data_cols: list[str], target_anomaly_columns: list[str]) -> pd.DataFrame:
+    dtypes = {col: np.float32 for col in data_cols}
+    dtypes.update({col: np.uint8 for col in target_anomaly_columns})
+    return pd.read_csv(filepath, index_col="timestamp", parse_dates=True, dtype=dtypes)
+
+
+def get_valid_channels(raw_channels: list[str], data_cols: list[str], sort: bool = True) -> list[str]:
+    if not raw_channels:
+        print(f"No target_channels provided. Using all data columns: {data_cols}")
+        valid_channels = data_cols
     else:
-        config.customParameters.target_channels = [x for x in config.customParameters.target_channels if x in data_columns]
+        seen = set()
+        valid_channels = [ch for ch in raw_channels if ch in data_cols and not (ch in seen or seen.add(ch))]
+        if not valid_channels:
+            print(f"No valid target channels found in dataset, falling back to all data columns.")
+            valid_channels = data_cols
 
-        # Remove unused columns from dataset
-        all_used_channels = [x for x in data_columns if x in set(config.customParameters.target_channels)]
-        all_used_anomaly_columns = [f"is_anomaly_{channel}" for channel in all_used_channels]
-        if len(anomaly_columns) == 1 and anomaly_columns[0] == "is_anomaly":  # Handle datasets with only one global is_anomaly column
-            for c in all_used_anomaly_columns:
-                dataset[c] = dataset["is_anomaly"]
-            dataset = dataset.drop(columns="is_anomaly")
-        dataset = dataset.loc[:, all_used_channels + all_used_anomaly_columns]
+    if sort:
+        valid_channels = sorted(valid_channels)
 
-    labels = dataset[all_used_anomaly_columns].to_numpy()
-    dataset = dataset[all_used_channels].to_numpy()
-    meansOutput = str(config.modelOutput) + ".means.txt"
-    stdsOutput = str(config.modelOutput) + ".stds.txt"
+    return valid_channels
+
+
+# Remove unused columns from dataset
+def unravel_global_annotation(dataset: pd.DataFrame, original_anomaly_cols: list[str],
+                              target_channel_anomaly_cols: list[str]) -> pd.DataFrame:
+    if len(original_anomaly_cols) == 1 and original_anomaly_cols[0] == "is_anomaly":
+        for col in target_channel_anomaly_cols:
+            dataset[col] = dataset["is_anomaly"]
+        dataset = dataset.drop(columns="is_anomaly")
+    return dataset
+
+def get_means_stds(data: np.ndarray, labels: np.ndarray, config: AlgorithmArgs):
+    means_path = str(config.modelOutput) + ".means.txt"
+    stds_path = str(config.modelOutput) + ".stds.txt"
+
     if config.executionType == "train":
-        train_means = [np.mean(dataset[:, i][labels[:, i] == 0]) for i in range(dataset.shape[-1])]
-        np.savetxt(meansOutput, train_means)
+        means = [np.mean(data[:, i][labels[:, i] == 0]) for i in range(data.shape[1])]
+        stds = [np.std(data[:, i][labels[:, i] == 0]) for i in range(data.shape[1])]
+        stds = np.where(np.asarray(stds) == 0, 1, stds)# do not divide constant signals by zero
 
-        train_stds = [np.std(dataset[:, i][labels[:, i] == 0].astype(float)) for i in range(dataset.shape[-1])]
-        train_stds = np.asarray(train_stds)
-        train_stds = np.where(train_stds == 0, 1, train_stds)  # do not divide constant signals by zero
-        np.savetxt(stdsOutput, train_stds)
+        np.savetxt(means_path, means)
+        np.savetxt(stds_path, stds)
+
     elif config.executionType == "execute":
-        train_means = np.atleast_1d(np.loadtxt(meansOutput))
-        train_stds = np.atleast_1d(np.loadtxt(stdsOutput))
+        means = np.atleast_1d(np.loadtxt(means_path))
+        stds = np.atleast_1d(np.loadtxt(stds_path))
 
-
-    return dataset, train_means, train_stds
+    return means, stds
 
 
 def train(config: AlgorithmArgs):
