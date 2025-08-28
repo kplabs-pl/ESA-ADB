@@ -6,10 +6,8 @@ import numpy as np
 import pandas as pd
 import pickle
 
-from typing import Tuple, List
 from typing import List
 from dataclasses import dataclass
-
 
 
 @dataclass
@@ -36,7 +34,23 @@ def load_data(config: AlgorithmArgs) -> tuple[np.ndarray, np.ndarray, np.ndarray
     data_columns, anomaly_columns = get_columns_names(config.dataInput)
     dataset = read_dataset(config.dataInput, data_columns, anomaly_columns)
 
-    target_channels = get_valid_channels(config.customParameters.target_channels, data_columns)
+    target_channels_alpha = get_valid_channels(
+        config.customParameters.target_channels,
+        data_columns,
+        sort=True,
+        sort_type="default"
+    )
+    print(f"Channels sorted alphabetically: {target_channels_alpha}")
+
+    target_channels_numeric = get_valid_channels(
+        config.customParameters.target_channels,
+        data_columns,
+        sort=True,
+        sort_type="numeric"
+    )
+    print(f"Channels sorted numerically: {target_channels_numeric}")
+
+    target_channels = target_channels_alpha
     config.customParameters.target_channels = target_channels
 
     target_anomaly_columns = [f"is_anomaly_{ch}" for ch in target_channels]
@@ -64,21 +78,24 @@ def read_dataset(filepath: str, data_cols: list[str], target_anomaly_columns: li
     return pd.read_csv(filepath, index_col="timestamp", parse_dates=True, dtype=dtypes)
 
 
-def get_valid_channels(raw_channels: list[str], data_cols: list[str], sort: bool = True) -> list[str]:
+def get_valid_channels(raw_channels: list[str], data_cols: list[str], sort: bool, sort_type: str) -> list[str]:
     if not raw_channels:
         print(f"No target_channels provided. Using all data columns: {data_cols}")
         valid_channels = data_cols
     else:
-        seen = set()
-        valid_channels = [ch for ch in raw_channels if ch in data_cols and not (ch in seen or seen.add(ch))]
+        valid_channels = list(dict.fromkeys([ch for ch in raw_channels if ch in data_cols]))
         if not valid_channels:
-            print(f"No valid target channels found in dataset, falling back to all data columns.")
+            print("No valid target channels found in dataset, falling back to all data columns.")
             valid_channels = data_cols
 
     if sort:
-        valid_channels = sorted(valid_channels)
+        if sort_type == "numeric":
+            valid_channels.sort(key=lambda ch: int(ch.split("_")[1]))
+        elif sort_type == "default":
+            valid_channels.sort()
 
     return valid_channels
+
 
 
 # Remove unused columns from dataset
