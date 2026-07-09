@@ -1,7 +1,13 @@
 <h1>ESA Anomaly Detection Benchmark</h1>
 
+[![Dataset download](https://img.shields.io/badge/Dataset%20download-Zenodo-white)](https://doi.org/10.5281/zenodo.12528695)
+[![Official Website](https://img.shields.io/badge/Official%20project%20website-ai4gs.space--codev.org-green)](https://ai4gs.space-codev.org/esa-adb/)
+[![Kaggle competition](https://img.shields.io/badge/Kaggle%20competition-Kaggle-blue)](https://www.kaggle.com/competitions/esa-adb-challenge)
+[![DMLR paper](https://img.shields.io/badge/Official%20paper-DMLR-red)](https://openreview.net/forum?id=bbpRMoatVO)
+[![GitHub stars](https://img.shields.io/github/stars/kplabs-pl/ESA-ADB?style=social)](https://github.com/kplabs-pl/ESA-ADB/stargazers)
+
 The European Space Agency Anomaly Detection Benchmark (ESA-ADB) consists of three main components (visualised in the figure below for easier comprehension):
-1.	Large-scale, curated, structured, ML-ready ESA Anomalies Dataset (ESA-AD, in short) of real-life satellite telemetry collected from three ESA missions (out of which two are selected for benchmarking in ESA-ADB), manually annotated by spacecraft operations engineers (SOEs) and ML experts, and cross-verified using state-of-the-art algorithms. It can be downloaded from here: https://doi.org/10.5281/zenodo.12528696
+1.	Large-scale, curated, structured, ML-ready ESA Anomalies Dataset (ESA-AD, in short) of real-life satellite telemetry collected from three ESA missions (out of which two are selected for benchmarking in ESA-ADB), manually annotated by spacecraft operations engineers (SOEs) and ML experts, and cross-verified using state-of-the-art algorithms. **It can be downloaded from here**: https://doi.org/10.5281/zenodo.12528696
 2.	Evaluation pipeline designed by ML experts for the practical needs of SOEs from the ESA’s European Space Operations Centre (ESOC). It introduces new metrics designed for satellite telemetry according to the latest advancements in time series anomaly detection (TSAD) and simulates real operational scenarios, e.g. different mission phases and real-time monitoring. 
 3.	Benchmarking results of TSAD algorithms selected and improved to comply with the space operations requirements.
 
@@ -72,6 +78,17 @@ The scripts configure and run all algorithms in Docker containers. Results are g
 - when analyzing results for different anomaly types for the lightweight subsets of channels, it is necessary to regenerate anomaly types using anomaly_types.csv using scripts/infer_anomaly_types.py. It is because anomaly types may depend on the analyzed subset of channels.
 - for now, all algorithms treat rare nominal events as anomalies. To change that behaviour, it would be necessary to modify the code of the framework and some algorithms
 
+## Official project website
+
+The official webpage of the **ESA Anomaly Detection Benchmark** is available here:
+
+👉 **[https://ai4gs.space-codev.org/esa-adb/](https://ai4gs.space-codev.org/esa-adb/)**
+
+## Related Kaggle competition
+
+The ESA-ADB dataset is also used in the **[Spacecraft Anomaly Challenge on ESA dataset](https://www.kaggle.com/competitions/esa-adb-challenge)** hosted on Kaggle.
+
+The challenge focuses on detecting anomalies in real spacecraft telemetry using AI methods and provides a practical benchmark for comparing anomaly detection approaches developed with ESA-ADB.
 
 ## TimeEval
 The code of the benchmark is based on the [TimeEval framework](https://github.com/TimeEval/TimeEval). Please refer to its documentation in case of any detailed questions about API. 
@@ -101,16 +118,16 @@ If you use TimeEval in your project or research, please cite the demonstration p
 
 If you refer to ESA-ADB in your work, please cite our paper:
 
-> Krzysztof Kotowski, Christoph Haskamp, Jacek Andrzejewski, Bogdan Ruszczak, Jakub Nalepa, Daniel Lakey, Peter Collins, Aybike Kolmas, Mauro Bartesaghi, Jose Martínez-Heras, and Gabriele De Canio.
-> European Space Agency Benchmark for Anomaly Detection in Satellite Telemetry. arXiv, 2024.
-> doi:[10.48550/arXiv.2406.17826](https://doi.org/10.48550/arXiv.2406.17826)
+> Krzysztof Kotowski, Christoph Haskamp, Jacek Andrzejewski, Bogdan Ruszczak, Jakub Nalepa, Daniel Lakey, Peter Collins, Jose Martínez-Heras, and Gabriele De Canio.
+> European Space Agency Dataset and Benchmark for Real-World Anomaly Detection in Spacecraft Time Series. DMLR, 2026.
+> [openreview.net/forum?id=bbpRMoatVO](https://openreview.net/forum?id=bbpRMoatVO)
 
 ```bibtex
-@article{kotowski_european_2024,
-  title = {European {Space} {Agency} {Benchmark} for {Anomaly} {Detection} in {Satellite} {Telemetry}},
-  author = {Kotowski, Krzysztof and Haskamp, Christoph and Andrzejewski, Jacek and Ruszczak, Bogdan and Nalepa, Jakub and Lakey, Daniel and Collins, Peter and Kolmas, Aybike and Bartesaghi, Mauro and Martinez-Heras, Jose and De Canio, Gabriele},
-  date = {2024},
-  publisher = {arXiv},
-  doi = {10.48550/arXiv.2406.17826}
+@article{kotowski2026european,
+   title={European Space Agency Dataset and Benchmark for Real-World Anomaly Detection in Spacecraft Time Series},
+   author={Krzysztof Kotowski and Christoph Haskamp and Jacek Andrzejewski and Bogdan Ruszczak and Jakub Nalepa and Daniel Lakey and Peter Collins and Jose Martinez Heras and Gabriele De Canio},
+   journal={Journal of Data-centric Machine Learning Research},
+   year={2026},
+   url={https://openreview.net/forum?id=bbpRMoatVO},
 }
 ```
