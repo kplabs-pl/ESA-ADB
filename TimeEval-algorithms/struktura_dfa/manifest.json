@@ -1,0 +1,43 @@
+{
+    "title": "Struktura DFA",
+    "description": "Detrended Fluctuation Analysis (DFA) anomaly detector. Scores each channel independently via the DFA scaling exponent on sliding windows; flags deviations from a robust (median + MAD) self-calibrated baseline. Zero training, deterministic. Based on Peng et al., Phys. Rev. E, 1994.",
+    "inputDimensionality": "multivariate",
+    "version": "0.1",
+    "authors": "Phil Koščák (koscak-labs)",
+    "language": "Rust",
+    "type": "Detector",
+    "mainFile": "target/release/struktura-timeeval",
+    "learningType": "unsupervised",
+    "executionStep": {
+        "parameters": [
+            {
+                "name": "window_size",
+                "type": "int",
+                "defaultValue": 1024,
+                "optional": "true",
+                "description": "Number of samples per DFA window. Must be >= 64."
+            },
+            {
+                "name": "stride",
+                "type": "int",
+                "defaultValue": 256,
+                "optional": "true",
+                "description": "Step size between consecutive windows in samples."
+            },
+            {
+                "name": "baseline_fraction",
+                "type": "float",
+                "defaultValue": 0.2,
+                "optional": "true",
+                "description": "Fraction of the series (from the start) used to establish the baseline alpha. The rest is scored against it."
+            },
+            {
+                "name": "random_state",
+                "type": "int",
+                "defaultValue": 42,
+                "optional": "true",
+                "description": "Not used (deterministic algorithm). Present for framework compatibility."
+            }
+        ]
+    }
+}
