@@ -46,19 +46,13 @@
                 "description": "false (default): flag the whole window, which marks up to window_size samples before the data that triggered it (offline localisation). true: flag only the stride samples after the window ends (online, no look-ahead)."
             },
             {
-                "name": "target_channels",
-                "type": "List[str]",
-                "defaultValue": null,
-                "optional": "true",
-                "description": "Channels to score; default all data columns. Output columns are sorted by name, as in the std algorithm."
-            },
-            {
                 "name": "random_state",
                 "type": "int",
                 "defaultValue": 42,
                 "optional": "true",
                 "description": "Not used (deterministic algorithm). Present for framework compatibility."
             }
-        ]
+        ],
+        "modelInput": "none"
     }
 }
