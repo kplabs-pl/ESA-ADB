@@ -1,8 +1,8 @@
 {
     "title": "Struktura DFA",
-    "description": "Detrended Fluctuation Analysis (DFA) anomaly detector. Scores each channel independently via the DFA scaling exponent on sliding windows; flags deviations from a robust (median + MAD) self-calibrated baseline. Zero training, deterministic. Based on Peng et al., Phys. Rev. E, 1994.",
+    "description": "Detrended Fluctuation Analysis (DFA) anomaly detector. Each channel is scored independently: the DFA scaling exponent is computed on sliding windows and a window is flagged when its robust z-score against a self-calibrated baseline (median + MAD) exceeds a threshold. Outputs one 0/1 column per channel. Zero training, deterministic. Based on Peng et al., Phys. Rev. E, 1994.",
     "inputDimensionality": "multivariate",
-    "version": "0.1",
+    "version": "0.2",
     "authors": "Phil Koščák (koscak-labs)",
     "language": "Rust",
     "type": "Detector",
@@ -30,6 +30,27 @@
                 "defaultValue": 0.2,
                 "optional": "true",
                 "description": "Fraction of the series (from the start) used to establish the baseline alpha. The rest is scored against it."
+            },
+            {
+                "name": "threshold",
+                "type": "float",
+                "defaultValue": 3.5,
+                "optional": "true",
+                "description": "A window is flagged when |alpha - baseline median| / (1.4826 * MAD) exceeds this value."
+            },
+            {
+                "name": "causal",
+                "type": "boolean",
+                "defaultValue": false,
+                "optional": "true",
+                "description": "false (default): flag the whole window, which marks up to window_size samples before the data that triggered it (offline localisation). true: flag only the stride samples after the window ends (online, no look-ahead)."
+            },
+            {
+                "name": "target_channels",
+                "type": "List[str]",
+                "defaultValue": null,
+                "optional": "true",
+                "description": "Channels to score; default all data columns. Output columns are sorted by name, as in the std algorithm."
             },
             {
                 "name": "random_state",
