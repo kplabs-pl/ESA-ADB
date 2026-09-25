@@ -1,6 +1,6 @@
 FROM registry.gitlab.hpi.de/akita/i/rust-base
 
-LABEL maintainer="webfastonline@gmail.com"
+LABEL maintainer="phil.phauler@gmail.com"
 
 # Copy source and build in release mode
 COPY Cargo.toml ./
