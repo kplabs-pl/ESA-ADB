@@ -43,7 +43,7 @@
                 "type": "boolean",
                 "defaultValue": false,
                 "optional": "true",
-                "description": "false (default): flag the whole window, which marks up to window_size samples before the data that triggered it (offline localisation). true: no window is judged until the baseline windows have ended, and only the stride samples after each decision are flagged (no look-ahead)."
+                "description": "false (default): flag the whole window, which marks up to window_size samples before the data that triggered it (offline localisation). true: no window is judged until the baseline windows have ended, and only the stride samples after each decision are flagged (nothing before a decision; the baseline length is set from the whole file)."
             },
             {
                 "name": "random_state",

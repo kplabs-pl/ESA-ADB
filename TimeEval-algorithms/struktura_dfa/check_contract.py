@@ -41,7 +41,8 @@ def evaluate_path(out, timestamps):
     scaled = scale_scores(y)
     ts = pd.DataFrame({"timestamp": timestamps})
     ts["Score"] = scaled.max(axis=1).astype(np.uint8)  # raised a length mismatch on the merged version
-    return y
+    assert np.array_equal(scaled, y), "scale_scores changed the 0/1 output"
+    return scaled
 
 
 def run(exe, inp, out, params):

@@ -13,8 +13,6 @@
 //!
 //! Interface: JSON config as argv[1] (TimeEval convention):
 //!   dataInput, dataOutput, customParameters, executionType
-//!
-//! First Rust-based algorithm in ESA-ADB.
 
 use std::env;
 use std::fs;

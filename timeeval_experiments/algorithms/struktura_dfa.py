@@ -33,7 +33,7 @@ _struktura_dfa_parameters: Dict[str, Dict[str, Any]] = {
  },
  "causal": {
   "defaultValue": False,
-  "description": "If true, flag only the stride samples after each decision (no look-ahead); if false, flag the whole window.",
+  "description": "If true, flag only the stride samples after each decision (nothing before the decision; the baseline length is set from the whole file); if false, flag the whole window.",
   "name": "causal",
   "type": "boolean"
  },
