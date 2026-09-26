@@ -15,7 +15,7 @@
                 "type": "int",
                 "defaultValue": 1024,
                 "optional": "true",
-                "description": "Number of samples per DFA window. Must be >= 64."
+                "description": "Number of samples per DFA window; values below 72 are raised to 72, the smallest window the DFA fit can use."
             },
             {
                 "name": "stride",
@@ -29,7 +29,7 @@
                 "type": "float",
                 "defaultValue": 0.2,
                 "optional": "true",
-                "description": "Fraction of the series (from the start) used to establish the baseline alpha. The rest is scored against it."
+                "description": "Fraction of the windows (from the start) used for the baseline, and never fewer than 10 windows; a channel with too few windows is left unflagged."
             },
             {
                 "name": "threshold",
@@ -43,7 +43,7 @@
                 "type": "boolean",
                 "defaultValue": false,
                 "optional": "true",
-                "description": "false (default): flag the whole window, which marks up to window_size samples before the data that triggered it (offline localisation). true: flag only the stride samples after the window ends (online, no look-ahead)."
+                "description": "false (default): flag the whole window, which marks up to window_size samples before the data that triggered it (offline localisation). true: no window is judged until the baseline windows have ended, and only the stride samples after each decision are flagged (no look-ahead)."
             },
             {
                 "name": "random_state",
