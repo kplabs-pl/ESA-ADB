@@ -87,7 +87,7 @@ table shows the maximum over the 20 shifts.
 
 **Tuning did not help.** We chose window size and threshold on the training split (12 settings,
 by channel F0.5; the pick was window 128, threshold 2.5). On the test split that setting beat its
-own shifted copies on no metric (smallest p 0.095). The defaults are kept.
+own shifted copies on no metric (smallest p 0.238 on the Anomaly labels). The defaults are kept.
 
 **Limits:**
 - One channel subset and one split. The full 58-channel set was not run.
