@@ -209,21 +209,28 @@ fn score_channel(
         pos += stride;
     }
 
-    if alphas.is_empty() {
+    // Robust baseline from the first baseline_fraction windows, and never fewer than
+    // MIN_BASELINE_WINDOWS: a median/MAD from a handful of windows is too narrow and
+    // flags most of an ordinary noise channel.
+    let bl_count = ((alphas.len() as f64 * baseline_frac) as usize).max(MIN_BASELINE_WINDOWS);
+    if alphas.len() <= bl_count {
+        eprintln!(
+            "struktura_dfa: only {} usable windows, need more than {} for a baseline; channel left unflagged",
+            alphas.len(),
+            bl_count
+        );
         return flags;
     }
-
-    // Robust baseline from the first baseline_fraction windows.
-    let bl_count = ((alphas.len() as f64 * baseline_frac) as usize)
-        .max(2)
-        .min(alphas.len());
     let bl_alphas: Vec<f64> = alphas[..bl_count].iter().map(|(_, a)| *a).collect();
     let (bl_center, bl_scale) = robust_baseline(&bl_alphas);
 
     // Flag the samples of a window whose robust z-score exceeds the threshold: the whole
     // window (offline), or, causally, the `stride` samples that follow the window: a streaming
     // detector decides when the window's last value arrives and marks only what comes after.
-    for &(center, alpha) in &alphas {
+    // A causal detector cannot decide before its baseline exists, so it skips the baseline
+    // windows; every later decision uses only data that arrived before it.
+    let first = if causal { bl_count } else { 0 };
+    for &(center, alpha) in &alphas[first..] {
         let z = (alpha - bl_center).abs() / bl_scale;
         if z > threshold {
             let w_end = (center.saturating_sub(window / 2) + window).min(n);
@@ -287,6 +294,11 @@ fn default_stride() -> usize { 256 }
 fn default_baseline() -> f64 { 0.2 }
 fn default_threshold() -> f64 { 3.5 }
 
+/// Smallest window for which dfa() can fit its three box sizes between 16 and window/4.
+const MIN_WINDOW: usize = 72;
+/// Fewest windows a channel's baseline may be built from.
+const MIN_BASELINE_WINDOWS: usize = 10;
+
 fn main() {
     let args: Vec<String> = env::args().collect();
     if args.len() < 2 {
@@ -308,9 +320,18 @@ fn main() {
         eprintln!("cannot read {}: {e}", config.data_input);
         std::process::exit(1);
     });
-    let mut lines_iter = BufReader::new(file).lines().map_while(Result::ok);
+    let mut lines_iter = BufReader::new(file).lines().map(|l| {
+        l.unwrap_or_else(|e| {
+            eprintln!("cannot read {}: {e}", config.data_input);
+            std::process::exit(1);
+        })
+    });
     let header = lines_iter.next().unwrap_or_default();
-    let columns: Vec<&str> = header.split(',').map(|s| s.trim()).collect();
+    let columns: Vec<&str> = header
+        .trim_start_matches('\u{feff}')
+        .split(',')
+        .map(|s| s.trim().trim_matches('"'))
+        .collect();
 
     // Data columns: everything except "timestamp" and "is_anomaly*".
     let data_cols: Vec<&str> = columns
@@ -353,7 +374,7 @@ fn main() {
     }
     let n = channels[0].len();
 
-    let window = config.custom_parameters.window_size.max(64);
+    let window = config.custom_parameters.window_size.max(MIN_WINDOW);
     let stride = config.custom_parameters.stride.max(1);
     let baseline_frac = config.custom_parameters.baseline_fraction.clamp(0.05, 0.95);
     let threshold = config.custom_parameters.threshold;
@@ -387,7 +408,14 @@ fn main() {
             }
             line.push(if ch[i] == 1 { '1' } else { '0' });
         }
-        writeln!(out, "{line}").unwrap();
+        if let Err(e) = writeln!(out, "{line}") {
+            eprintln!("cannot write {}: {e}", config.data_output);
+            std::process::exit(1);
+        }
+    }
+    if let Err(e) = out.flush() {
+        eprintln!("cannot write {}: {e}", config.data_output);
+        std::process::exit(1);
     }
 
     eprintln!("struktura_dfa: wrote {} rows x {} channel(s) to {}", n, n_channels, config.data_output);
