@@ -71,6 +71,7 @@ from .ssa import ssa
 from .stamp import stamp
 from .std import std
 from .stomp import stomp
+from .struktura_dfa import struktura_dfa
 from .subsequence_fast_mcd import subsequence_fast_mcd
 from .subsequence_eif import subsequence_eif
 from .subsequence_if import subsequence_if

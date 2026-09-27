@@ -2,20 +2,21 @@
 //!
 //! Detrended Fluctuation Analysis (Peng et al., Phys. Rev. E, 1994) on sliding
 //! windows. For each window the scaling exponent alpha is compared to a baseline
-//! established from the first `baseline_fraction` of the series. A deviation
-//! produces an anomaly score in [0, 1].
+//! established from the first `baseline_fraction` of the series. A window whose
+//! robust z-score (|alpha - median| / (1.4826 * MAD)) exceeds `threshold` marks
+//! its samples as anomalous.
 //!
-//! Multivariate: each channel is scored independently; the per-timestamp score
-//! is the maximum across channels (any-channel-anomalous semantics).
+//! Output follows the ESA-ADB convention (as in the std algorithm): no header,
+//! one 0/1 column per target channel, channels sorted by name. The evaluation
+//! min-max scales each column and casts it to uint8, so only binary output
+//! survives it.
 //!
 //! Interface: JSON config as argv[1] (TimeEval convention):
 //!   dataInput, dataOutput, customParameters, executionType
-//!
-//! First Rust-based algorithm in ESA-ADB.
 
 use std::env;
 use std::fs;
-use std::io::Write;
+use std::io::{BufRead, BufReader, Write};
 
 use serde::Deserialize;
 
@@ -184,12 +185,15 @@ fn score_channel(
     window: usize,
     stride: usize,
     baseline_frac: f64,
-) -> Vec<f64> {
+    threshold: f64,
+    causal: bool,
+) -> Vec<u8> {
     let n = values.len();
-    let mut scores = vec![0.0f64; n];
+    let mut flags = vec![0u8; n];
+    let scores = &mut flags;
 
     if !sanitize(values) || n < window {
-        return scores;
+        return flags;
     }
 
     // Compute alpha on every sliding window.
@@ -203,31 +207,39 @@ fn score_channel(
         pos += stride;
     }
 
-    if alphas.is_empty() {
-        return scores;
+    // Robust baseline from the first baseline_fraction windows, and never fewer than
+    // MIN_BASELINE_WINDOWS: a median/MAD from a handful of windows is too narrow and
+    // flags most of an ordinary noise channel.
+    let bl_count = ((alphas.len() as f64 * baseline_frac) as usize).max(MIN_BASELINE_WINDOWS);
+    if alphas.len() <= bl_count {
+        eprintln!(
+            "struktura_dfa: only {} usable windows, need more than {} for a baseline; channel left unflagged",
+            alphas.len(),
+            bl_count
+        );
+        return flags;
     }
-
-    // Robust baseline from the first baseline_fraction windows.
-    let bl_count = ((alphas.len() as f64 * baseline_frac) as usize)
-        .max(2)
-        .min(alphas.len());
     let bl_alphas: Vec<f64> = alphas[..bl_count].iter().map(|(_, a)| *a).collect();
     let (bl_center, bl_scale) = robust_baseline(&bl_alphas);
 
-    // Score: |alpha - center| / scale, sigmoid to [0, 1].
-    for &(center, alpha) in &alphas {
-        let z = ((alpha - bl_center).abs() / bl_scale).min(20.0);
-        let score = 2.0 / (1.0 + libm::exp(-z)) - 1.0;
-        let start = center.saturating_sub(window / 2);
-        let end = (start + window).min(n);
-        for i in start..end {
-            if score > scores[i] {
-                scores[i] = score;
+    // Flag the samples of a window whose robust z-score exceeds the threshold: the whole
+    // window (offline), or, causally, the `stride` samples that follow the window: a streaming
+    // detector decides when the window's last value arrives and marks only what comes after.
+    // A causal detector cannot decide before its baseline exists, so it skips the baseline
+    // windows; every later decision uses only data that arrived before it.
+    let first = if causal { bl_count } else { 0 };
+    for &(center, alpha) in &alphas[first..] {
+        let z = (alpha - bl_center).abs() / bl_scale;
+        if z > threshold {
+            let w_end = (center.saturating_sub(window / 2) + window).min(n);
+            let (start, end) = if causal { (w_end, (w_end + stride).min(n)) } else { (w_end.saturating_sub(window), w_end) };
+            for flag in &mut scores[start..end] {
+                *flag = 1;
             }
         }
     }
 
-    scores
+    flags
 }
 
 // ── TimeEval interface ──────────────────────────────────────────────────────
@@ -251,6 +263,12 @@ struct Params {
     stride: usize,
     #[serde(default = "default_baseline")]
     baseline_fraction: f64,
+    #[serde(default = "default_threshold")]
+    threshold: f64,
+    #[serde(default)]
+    target_channels: Option<Vec<String>>,
+    #[serde(default)]
+    causal: bool,
     #[serde(default)]
     random_state: u64,
 }
@@ -261,6 +279,9 @@ impl Default for Params {
             window_size: default_window(),
             stride: default_stride(),
             baseline_fraction: default_baseline(),
+            threshold: default_threshold(),
+            target_channels: None,
+            causal: false,
             random_state: 42,
         }
     }
@@ -269,6 +290,12 @@ impl Default for Params {
 fn default_window() -> usize { 1024 }
 fn default_stride() -> usize { 256 }
 fn default_baseline() -> f64 { 0.2 }
+fn default_threshold() -> f64 { 3.5 }
+
+/// Smallest window for which dfa() can fit its three box sizes between 16 and window/4.
+const MIN_WINDOW: usize = 72;
+/// Fewest windows a channel's baseline may be built from.
+const MIN_BASELINE_WINDOWS: usize = 10;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -286,22 +313,45 @@ fn main() {
         return;
     }
 
-    // ── Parse CSV ───────────────────────────────────────────────────────
-    let csv_text = fs::read_to_string(&config.data_input).unwrap_or_else(|e| {
+    // ── Parse CSV (streamed: ESA-ADB test files have millions of rows) ─────
+    let file = fs::File::open(&config.data_input).unwrap_or_else(|e| {
         eprintln!("cannot read {}: {e}", config.data_input);
         std::process::exit(1);
     });
-
-    let mut lines_iter = csv_text.lines();
-    let header = lines_iter.next().unwrap_or("");
-    let columns: Vec<&str> = header.split(',').map(|s| s.trim()).collect();
+    let mut lines_iter = BufReader::new(file).lines().map(|l| {
+        l.unwrap_or_else(|e| {
+            eprintln!("cannot read {}: {e}", config.data_input);
+            std::process::exit(1);
+        })
+    });
+    let header = lines_iter.next().unwrap_or_default();
+    let columns: Vec<&str> = header
+        .trim_start_matches('\u{feff}')
+        .split(',')
+        .map(|s| s.trim().trim_matches('"'))
+        .collect();
 
     // Data columns: everything except "timestamp" and "is_anomaly*".
-    let data_col_indices: Vec<usize> = columns
+    let data_cols: Vec<&str> = columns
         .iter()
-        .enumerate()
-        .filter(|(_, c)| **c != "timestamp" && !c.starts_with("is_anomaly"))
-        .map(|(i, _)| i)
+        .copied()
+        .filter(|c| *c != "timestamp" && !c.starts_with("is_anomaly"))
+        .collect();
+    // Target channels as in the std algorithm: the requested ones that exist
+    // (deduplicated), else all data columns; then sorted by name.
+    let mut targets: Vec<&str> = Vec::new();
+    for ch in config.custom_parameters.target_channels.iter().flatten() {
+        if data_cols.contains(&ch.as_str()) && !targets.contains(&ch.as_str()) {
+            targets.push(ch.as_str());
+        }
+    }
+    if targets.is_empty() {
+        targets = data_cols.clone();
+    }
+    targets.sort_unstable();
+    let data_col_indices: Vec<usize> = targets
+        .iter()
+        .map(|t| columns.iter().position(|c| c == t).expect("target is a column"))
         .collect();
 
     let n_channels = data_col_indices.len();
@@ -310,56 +360,61 @@ fn main() {
         std::process::exit(1);
     }
 
-    let rows: Vec<Vec<&str>> = lines_iter.map(|l| l.split(',').collect()).collect();
-    let n = rows.len();
+    let mut channels: Vec<Vec<f64>> = vec![Vec::new(); n_channels];
+    for line in lines_iter {
+        if line.trim().is_empty() {
+            continue;
+        }
+        let fields: Vec<&str> = line.split(',').collect();
+        for (ch, &col) in channels.iter_mut().zip(&data_col_indices) {
+            ch.push(fields.get(col).and_then(|s| s.trim().parse::<f64>().ok()).unwrap_or(f64::NAN));
+        }
+    }
+    let n = channels[0].len();
 
-    let mut channels: Vec<Vec<f64>> = (0..n_channels)
-        .map(|ci| {
-            let col = data_col_indices[ci];
-            rows.iter()
-                .map(|fields| {
-                    fields
-                        .get(col)
-                        .and_then(|s| s.trim().parse::<f64>().ok())
-                        .unwrap_or(f64::NAN)
-                })
-                .collect()
-        })
-        .collect();
-
-    let window = config.custom_parameters.window_size.max(64);
+    let window = config.custom_parameters.window_size.max(MIN_WINDOW);
     let stride = config.custom_parameters.stride.max(1);
     let baseline_frac = config.custom_parameters.baseline_fraction.clamp(0.05, 0.95);
+    let threshold = config.custom_parameters.threshold;
 
     eprintln!(
-        "struktura_dfa: {} samples x {} channel(s), window={}, stride={}, baseline={:.0}%",
-        n, n_channels, window, stride, baseline_frac * 100.0
+        "struktura_dfa: {} samples x {} channel(s), window={}, stride={}, baseline={:.0}%, threshold={}",
+        n, n_channels, window, stride, baseline_frac * 100.0, threshold
     );
 
-    // ── Score each channel, take per-timestamp max ──────────────────────
-    let mut final_scores = vec![0.0f64; n];
-
+    // ── Flag each target channel independently ──────────────────────────
+    let mut flags: Vec<Vec<u8>> = Vec::with_capacity(n_channels);
     for (ci, channel) in channels.iter_mut().enumerate() {
-        let ch_scores = score_channel(channel, window, stride, baseline_frac);
-        let ch_name = columns.get(data_col_indices[ci]).unwrap_or(&"?");
-        let flagged = ch_scores.iter().filter(|&&s| s > 0.5).count();
-        eprintln!("  channel {:>20}: {} flagged timestamps", ch_name, flagged);
-        for (i, &s) in ch_scores.iter().enumerate() {
-            if s > final_scores[i] {
-                final_scores[i] = s;
-            }
-        }
+        let ch = score_channel(channel, window, stride, baseline_frac, threshold, config.custom_parameters.causal);
+        let flagged = ch.iter().filter(|&&f| f == 1).count();
+        eprintln!("  channel {:>20}: {} flagged timestamps", targets[ci], flagged);
+        flags.push(ch);
     }
 
     // ── Write output ────────────────────────────────────────────────────
-    let mut out = fs::File::create(&config.data_output).unwrap_or_else(|e| {
+    let out = fs::File::create(&config.data_output).unwrap_or_else(|e| {
         eprintln!("cannot write {}: {e}", config.data_output);
         std::process::exit(1);
     });
-    writeln!(out, "anomaly_score").unwrap();
-    for s in &final_scores {
-        writeln!(out, "{:.6}",  s).unwrap();
+    let mut out = std::io::BufWriter::new(out);
+    let mut line = String::new();
+    for i in 0..n {
+        line.clear();
+        for (ci, ch) in flags.iter().enumerate() {
+            if ci > 0 {
+                line.push(',');
+            }
+            line.push(if ch[i] == 1 { '1' } else { '0' });
+        }
+        if let Err(e) = writeln!(out, "{line}") {
+            eprintln!("cannot write {}: {e}", config.data_output);
+            std::process::exit(1);
+        }
+    }
+    if let Err(e) = out.flush() {
+        eprintln!("cannot write {}: {e}", config.data_output);
+        std::process::exit(1);
     }
 
-    eprintln!("struktura_dfa: wrote {} scores to {}", n, config.data_output);
+    eprintln!("struktura_dfa: wrote {} rows x {} channel(s) to {}", n, n_channels, config.data_output);
 }

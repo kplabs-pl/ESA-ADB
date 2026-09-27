@@ -1,8 +1,8 @@
 {
     "title": "Struktura DFA",
-    "description": "Detrended Fluctuation Analysis (DFA) anomaly detector. Scores each channel independently via the DFA scaling exponent on sliding windows; flags deviations from a robust (median + MAD) self-calibrated baseline. Zero training, deterministic. Based on Peng et al., Phys. Rev. E, 1994.",
+    "description": "Detrended Fluctuation Analysis (DFA) anomaly detector. Each channel is scored independently: the DFA scaling exponent is computed on sliding windows and a window is flagged when its robust z-score against a self-calibrated baseline (median + MAD) exceeds a threshold. Outputs one 0/1 column per channel. Zero training, deterministic. Based on Peng et al., Phys. Rev. E, 1994.",
     "inputDimensionality": "multivariate",
-    "version": "0.1",
+    "version": "0.2",
     "authors": "Phil Koščák (koscak-labs)",
     "language": "Rust",
     "type": "Detector",
@@ -15,7 +15,7 @@
                 "type": "int",
                 "defaultValue": 1024,
                 "optional": "true",
-                "description": "Number of samples per DFA window. Must be >= 64."
+                "description": "Number of samples per DFA window; values below 72 are raised to 72, the smallest window the DFA fit can use."
             },
             {
                 "name": "stride",
@@ -29,7 +29,21 @@
                 "type": "float",
                 "defaultValue": 0.2,
                 "optional": "true",
-                "description": "Fraction of the series (from the start) used to establish the baseline alpha. The rest is scored against it."
+                "description": "Fraction of the windows (from the start) used for the baseline, and never fewer than 10 windows; a channel with too few windows is left unflagged."
+            },
+            {
+                "name": "threshold",
+                "type": "float",
+                "defaultValue": 3.5,
+                "optional": "true",
+                "description": "A window is flagged when |alpha - baseline median| / (1.4826 * MAD) exceeds this value."
+            },
+            {
+                "name": "causal",
+                "type": "boolean",
+                "defaultValue": false,
+                "optional": "true",
+                "description": "false (default): flag the whole window, which marks up to window_size samples before the data that triggered it (offline localisation). true: no window is judged until the baseline windows have ended, and only the stride samples after each decision are flagged (nothing before a decision; the baseline length is set from the whole file)."
             },
             {
                 "name": "random_state",
@@ -38,6 +52,7 @@
                 "optional": "true",
                 "description": "Not used (deterministic algorithm). Present for framework compatibility."
             }
-        ]
+        ],
+        "modelInput": "none"
     }
 }
